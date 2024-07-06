@@ -2,7 +2,7 @@
 My Journey of Building and Virtualizing an EPYC Home Server
 ===========================================================
 
-.. post:: Jun 20, 2024
+.. post:: Jul 1, 2024
    :tags: homelab, hardware, amd, epyc, proxmox, share
    :category: homelab
 
