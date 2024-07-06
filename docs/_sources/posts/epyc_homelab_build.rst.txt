@@ -26,7 +26,7 @@ I did not want to look in the consumer-grade hardware space when my primary inte
 Hardware
 ========
 
-After some research, the prohibitively high cost of high core count CPUs with good per-core performance made it challenging for me to find the ideal combo. Most likely it will be just a dedicated homer server running at the back within few years when I need to get an more powerful PC. I just set the budget at $2.5K, which pretty much dictated what grade of the hardware I could get. It is also certain I needed to use older generation hardware or even used parts to get the most out of my budget.
+After some research, the prohibitively high cost of high core count CPUs with good per-core performance made it challenging for me to find an ideal combo. Most likely the new build will be just a dedicated homer server running at the back within few years when I need to get an more powerful PC. I just set the budget at $2.5K, which pretty much dictated what grade of the hardware I could get. It is also certain I needed to use older generation hardware or even used parts to get the most out of my budget.
 
 
 .. |br| raw:: html
@@ -183,7 +183,7 @@ There is one more important thing, which is to install the QEMU agent. There is 
   :alt: Windows VM Creation QEMU agent
   :align: center
 
-Of course, hardly anyone wishes to access their Windows system on a web browser. For anyone with a Windows Pro license, you can enable remote desktop and access it from another client machine in the same local network. Simply go to Remote Desktop in Settings and toggle on Enable Remote Desktop.
+Of course, hardly anyone wishes to access their Windows system on a web browser. For anyone with a Windows Pro license, you can enable remote desktop and access it from another client machine in the same local network.
 
 
 ---------------------
@@ -210,7 +210,4 @@ Next, you can add the GPU to the VM. Go to VM's hardware setting, press add PCI 
   :alt: GPU passthrough mapping
   :align: center
 
-You should reboot the VM to take effect. In the VM, you should also install or update the GPU drive from the device management. But if you successfully see the device in the display adapter, it means you have set up successfully.
-
-
-
+You should reboot the VM to take effect. In the VM, you should also install or update the GPU driver from the device management. But if you successfully see the device in the display adapter, it means you have set up successfully.

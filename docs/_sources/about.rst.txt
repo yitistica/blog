@@ -1,8 +1,10 @@
 
 .. _about:
 
-About Yi Q
-============================
+About
+==========
+
+
+
 
 The world wants to know more about you.
-

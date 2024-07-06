@@ -2,3 +2,47 @@
     font-size: .9em;
     font-weight: bold;
 }
+
+
+/* article content */
+@media(min-width:960px){
+.bd-main .bd-content .bd-article-container {
+  max-width: 85%;  /* default is 60em */
+}
+.bd-page-width {
+  max-width: 85%;  /* default is 88rem */
+}
+.bd-sidebar-primary{
+    width: 20%;  /* default is 25%, sidebar width */
+    scrollbar-width: none;}
+
+/* navbar_start logo making the logo float to the center  */
+.navbar-header-items__start{
+    justify-content: center;
+}
+
+
+/* post meta */
+.meta_section_header{
+    color: var(--pst-color-heading);
+}
+
+.meta_section_header a{
+    color: var(--pst-color-heading);
+}
+
+.post_meta_ul {
+    list-style: none;
+}
+
+ul.post_meta_ul li span{
+    color: var(--pst-color-gray);
+    font-size: var(--pst-font-size-base);
+    margin-top: 5px;
+}
+
+
+/* category */
+.category_ul {}
+
+.category_li span {color: var(--pst-color-gray);}
