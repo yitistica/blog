@@ -1,20 +1,21 @@
 
-My Journey of Building and Virtualizing an EPYC Home Server
-===========================================================
+My Journey of Building and Virtualizing an EPYC Server
+======================================================
 
 .. post:: Jul 1, 2024
    :tags: homelab, hardware, amd, epyc, proxmox, share
    :category: homelab
 
-Building a virtualized home server from scratch is no easy task, at least to me it was rather challenging. It even took me 5 trips just to get all the parts in place even if I had done my research and planned for weeks ahead, and even more time to set it up. Overall I was able to get what I wanted, and here I want to share my experience of building a proper home server as a not-so-hardware-savvy guy and some of the troubleshooting I did along the way. Hopefully, if any first timer faces similar issues, they can find some clues here.
+Building a virtualized server from scratch is no easy task, at least to me, as a not-so-hardware-savvy guy, it was rather challenging. It even took me 5 trips just to get all the parts in place even if I had done my research and planned for weeks ahead, and even more time to set it up. Overall I was able to get what I wanted, and here I want to share my experience of building an EPYC server at home and some of the troubleshooting I did along the way. Hopefully, if any first timer faces similar issues, they can find some clues here.
+
 
 ============
 Backstory..
 ============
 
-For several years, I've maintained two well serving PCs: one as my workstation and another as my home server that hosts my experimental ML cluster and a bunch of other standalone containers. As time went by, I found both machines of consumer hardware struggling to keep up with my demands. I faced a rather awkward choice here: a. getting myself an additional daily-drive workstation and putting the existing ones as servers; or b. building a brand new server grade machine that can handle all my needs for now, and retire the rest. I went for the latter. Looking back, it was probably the better move. My room was already a mess of gadgets - PCs, laptops, many screens, and a bunch of network stuff. Adding a third machine could make the room even more cluttered. And I want the all the resources shared and managed in one place so that I can avoid the hassle of frequently moving and reconfiguring the existing deployments from one machine to another, since they have varying specifications. Plus I might have to live with the occasionally blue-screening on one of the machine, which I managed to ignore for over a year without any knowledge on what caused it. Let us just stop letting the past haunt us and move on.
+For several years, I've maintained two well serving PCs for work: one as my workstation and another as a server that hosts my experimental ML cluster and a bunch of other standalone containers. As time went by, I found both machines of consumer hardware struggling to keep up with my demands. I faced a rather awkward choice here: a. getting myself an additional daily-drive workstation and putting the existing ones as servers; or b. building a brand new server grade machine that can handle all my needs for now, and retire the rest. I went for the latter. Looking back, it was probably the better move. My room was already a mess of gadgets - PCs, laptops, many screens, and a bunch of network stuff. Adding a third machine could make the room even more cluttered. And I want the all the resources shared and managed in one place so that I can avoid the hassle of frequently moving and reconfiguring the existing deployments from one machine to another, since they have varying specifications. Plus I might have to live with the occasionally blue-screening on one of the machine, which I managed to ignore for over a year without any knowledge on what caused it. Let us just stop letting the past haunt us and move on.
 
-I did not want to look in the consumer-grade hardware space when my primary interest is to host services; my requirements lean towards a high core count rather than individual core performance. I am not a heavy gamer, but I also wanted to boot up a few Windows VMs for my daily use compatibility. Until recently, my local dealer started selling "brand new" AMD EPYC processors in stock. I was intrigued. I ended up buying two EPYC processors from him and building a machine around them.
+My overall requirements were that I could run an MLOps stack, which consists of databases and many nodes for different data processes (ETL pipelines, inference services, model management, monitoring and etc); a few more VMs of different operating systems for experimentation; and, even not power-efficiently, file & media servers. I did not want to look in the consumer-grade hardware space when my primary interest is to host services; my requirements lean towards a high core count rather than individual core performance. I am not a heavy gamer, but I also wanted to boot up a few Windows VMs for my daily use compatibility. Until recently, my local dealer started selling "brand new" AMD EPYC processors. I was intrigued. I ended up buying two EPYC processors from him and building a machine around them.
 
 .. image:: ../_static/images/post-epyc-homelab/epyc-7k62-chip.png
   :width: 400
@@ -62,12 +63,12 @@ For the motherboard, I have chosen the Supermicro H11DSi-NT. It was designed for
 
 **Memory**
 
-The motherboard supports up to 4TB Registered ECC DDR4 3200MHz RAM, and getting a total of 265GB of RAMs while maxing out speed seems reasonable enough for my needs. Though I made an mistake assuming there were only 8 sockets, in fact there are 16. I ended up having half of the slots empty, which I really shouldn't (why you should fill all the ram slots). I will get another 8 sticks of RAM in the near future once it is tested out.
+The motherboard supports up to 4TB Registered ECC DDR4 3200MHz RAM, and getting a total of 265GB of RAMs while maxing out speed seems reasonable enough for my needs. Though I made an mistake assuming there were only 8 sockets, in fact there are 16. I ended up having half of the slots empty, which I really shouldn't. I will get another 8 sticks of RAM in the near future once it is tested out.
 
 
 **GPU**
 
-My mentality on this was to kick start with an okay but cheap card that allows me to do some 7B LLM inference and lightweight machine learning training. If I am not using the GPU for computing, I could use it for screen display. My focus is specifically on the Nvidia line. I ended up getting a used Nvidia RTX 3060 12GB for a much cheaper price than a new 4060. VRAM is the key here, I could finally run 7B models locally (7 billion parameters in int8 precision require roughly 9GB of VRAM) and do some fine-tuning on a model in the cloud and run the quantized version locally. For a detailed calculation of the requirements, I recommend checking out this blog by `eleuther <https://blog.eleuther.ai/transformer-math/>`__.
+Even if I am building an ML stack, but most components to be deployed on this machine are more on the "op" side, therefore it is more CPU intense. My mentality on GPU was to kick start with an okay but cheap card that allows me to do some 7B LLM inference and lightweight machine learning training. If I am not using the GPU for computing, I could use it for screen display. My focus is specifically on the Nvidia line. I ended up getting a used Nvidia RTX 3060 12GB for a much cheaper price than a new 4060. VRAM is the key here, I could finally run 7B models locally (7 billion parameters in int8 precision require roughly 9GB of VRAM) and do some fine-tuning on a model in the cloud and run the quantized version locally. I probably will get another card for inference in the future. But for now, let us just stay within the budget.
 
 
 **Power, Chassis & CPU Cooler**
@@ -210,4 +211,4 @@ Next, you can add the GPU to the VM. Go to VM's hardware setting, press add PCI 
   :alt: GPU passthrough mapping
   :align: center
 
-You should reboot the VM to take effect. In the VM, you should also install or update the GPU driver from the device management. But if you successfully see the device in the display adapter, it means you have set up successfully.
+You should reboot the VM to take effect if it has been started. In the VM, you should also install or update the GPU driver from the device management. But if you successfully see the device in the display adapter, it means you have set up successfully.

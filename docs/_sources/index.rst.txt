@@ -1,6 +1,7 @@
 
 
-Welcome to my space. Find out more about me here: :ref:`about`
+Welcome! May I introduce myself :ref:`here <about>`.
+
 
 Posts
 =========
