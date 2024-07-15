@@ -1,0 +1,427 @@
+
+Set Up a Private Docker Registry
+================================
+
+.. post:: Jul 10, 2024
+   :tags: Docker, kubernetes, Docker image registry, set-up-guide
+   :category: devops
+
+
+I initially thought setting up a Docker registry for a local cluster would be a one-line command, but experience showed otherwise. I have browsed around and discovered that much of the obstacle many others and I encountered was due to TLS misconfiguration that was a requirement implicitly imposed by Docker and Kubernetes. In this post, I would like to share how to set up a TLS enabled private Docker registry in a local network. As a disclaimer, this is not really the best practice guide for a production environment, the aim of this post is to illustrate a barebones setup so that you can connect your Docker and Kubernetes environment to a private registry successfully.
+
+
+For this demonstration, I will be using 2 VMs: 1 hosting server for a Docker registry and 1 machine with Docker and Kubernetes installed that acts as a client machine to the registry. All machines are running on the same local network. The OS of each machine is Ubuntu Server 24.04 LTS. My Docker version is 27.0.3 and 1.46 for API version. My Kubernetes version is 1.30.2 (both client and server). And the registry image I will be using is registry:2.8.3.
+
+
+Setting up consists of the following steps:
+
+#. In the registry hosting machine, install Docker;
+#. In the registry hosting machine,implement security measures so that it can be accessed by other machines;
+#. In the registry hosting machine, set up a private Docker registry by running a registry container;
+#. In any other client-to-registry machines with Docker or Kubernetes, ensure network connectivity to the hosting machine, configure Docker and Kubernetes to use the private registry.
+
+
+================================
+What is Private Docker Registry?
+================================
+
+Docker registry is essentially a centralized storage and distribution point for Docker images. If you've used Docker before, you're probably familiar with Docker Hub - it's the default registry when you run Docker pull. A private Docker registry, on the other hand, is a self-hosted version that you can use to store your own images.
+
+People set up private Docker registries for various reasons. In my case, I need a place to store locally built images without constantly pushing them to a public registry, which saves time and keeps my images private. For larger enterprises, there might be additional motivations like security measures, meeting specific compliance requirements, or better integration with their custom CI/CD pipelines in their private infrastructure.
+
+================================
+Docker Installation on Ubuntu
+================================
+
+If you have installed Docker on your registry hosting machine already, you may skip this entire section.
+
+**Wipe Out the Previously Installed Docker**
+
+If you want to start fresh, run the following command to remove the installed Docker related packages.
+
+.. code-block:: console
+    :caption: Command: remove all Docker related packages
+
+    for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+
+**1. Installing Other Needed Packages**
+
+We will need curl to download the Docker's GPG key and ca-certificates for certificates. By default, ca-certificates and curl have been installed on Ubuntu. Run the following commands to install the packages.
+
+.. code-block:: console
+    :caption: Command: install ca-certificates and curl
+
+    sudo apt-get update
+    sudo apt-get install ca-certificates curl
+
+**2 Adding Docker's official GPG key**
+
+The package manager will use this GPG key to verify the signature on Docker packages for Docker installation. We should download the GPG key and place it in the :file_path:`/etc/apt/keyrings` directory for later use. You may also import it into the system's GPG keyring, although it is not necessary for our installation.
+
+.. code-block:: console
+    :caption: Command: download the Docker's GPG key & import it into the system's GPG keyring
+
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+    # *import the GPG key:
+    sudo gpg --import  /etc/apt/keyrings/docker.asc
+
+.. console-output:: console
+
+    gpg: key 8D81803C0EBFCD88: public key "Docker Release (CE deb) <docker@docker.com>" imported
+    gpg: Total number processed: 1
+    gpg:               imported: 1
+
+
+Unfortunately, Some users, myself included, may encounter issues with Docker's website being blocked by firewalls. If your server hasn't been configured with a proxy, you might need to manually download the required file and transfer it to the server yourself.
+
+.. console-output:: console
+    :emphasize-lines: 2
+
+    user@test-server-1:~$ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    curl: (28) Failed to connect to download.docker.com port 443 after 136127 ms: Couldn't connect to server
+
+Use another machine with a proxy set up that can access Docker's website to download the GPG key file from `https://download.docker.com/linux/ubuntu/gpg <https://download.docker.com/linux/ubuntu/gpg>`__. Transfer it to the given location on the target machine. Ensure that you modify the filename extension of the GPG file to .asc to help with proper recognition by the system. Then, perform the same operations as we did after the curl operation for the GPG file.
+
+
+**3 Add the repository to APT sources**
+
+Add the Docker repository to your system's package sources, which allows you to install and update Docker using the package manager.
+
+.. code-block:: console
+    :caption: Command: add the repository to Apt sources
+
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    sudo apt-get update
+
+What is commands does it create a configuration file at :file_path:`/etc/apt/sources.list.d/docker.list` directory and it will overwrite the existing :file_path:`docker.list` file if it exists. Ensure the signed-by argument is pointing to the right GPG key file we downloaded earlier.
+
+.. console-output:: console
+    :caption: /etc/apt/sources.list.d/docker.list
+
+    deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu       noble stable
+
+For mine, I have to use a mirror.
+
+.. code-block:: bash
+    :caption: Command: add the repository to Apt sources (with a mirror)
+
+    # for my case:
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] http://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/ubuntu \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    sudo apt-get update
+
+
+**4. Docker Installation**
+
+Before was the preparation, now we are ready to install Docker with the following command.
+
+.. code-block:: bash
+    :caption: Command: install Docker
+
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+
+**5.\* Adding Docker Image Registries**
+
+Let us try pulling a Docker image from Docker Hub to see if Docker installation is successful. If you encounter an error as below, it is likely due to Docker Hub being blocked by your firewall. You can add a registry mirror to the Docker configuration file to get around this issue.
+
+.. console-output:: console
+    :emphasize-lines: 5
+
+    user@test-server-1:~$ sudo docker pull hello-world
+    Using default tag: latest
+    latest: Pulling from library/hello-world
+    c1ec31eb5944: Retrying in 1 second
+    error pulling image configuration: download failed after attempts=6: dial tcp 192.133.77.133:443: i/o timeout
+
+
+.. code-block:: bash
+    :caption: Command: add mirrors to the Docker configuration file
+
+    # adding the registry mirrors to the docker configuration file:
+    sudo tee /etc/docker/daemon.json <<-'EOF'
+    {
+        "registry-mirrors": [
+            "https://docker.m.daocloud.io",
+            "https://dockerproxy.com",
+            "https://docker.nju.edu.cn",
+            "https://docker.mirrors.ustc.edu.cn"
+        ]
+    }
+    EOF
+
+    # restarting Docker services:
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+
+Notice that the mirrors I listed here are also not necessarily stable and for me specifically, please supply the ones you trust.
+
+
+==========================================
+Setting Up a Private Docker Image Registry
+==========================================
+
+As stated in the introduction, for clients to successfully communicate with the private registry, we need to address the TLS issue first. The Docker daemon, which is a background process responsible for managing Docker objects (e.g., images, containers, networks), tries to pull an image from a Docker registry, in our case, a private registry. It will verify the authenticity of the registry by checking the certificate. If the certificate is not signed by a trusted Certificate Authority (CA), the Docker daemon and Kubernetes will refuse to connect to the registry unless such certificates have already been added to the trusted certificate root store in your client machines. This is exactly what we want to do: 1. generate a self-signed certificate for the registry, 2. import the certificate into every client's trust store.
+
+First, let us note down the hostname or domain name of the registry hosting server. For mine, I will assign the hostname as `registry-server`. We will use OpenSSL to create a self-signed certificate for the registry.
+
+.. code-block:: bash
+    :caption: Command: creating a self-signed certificate
+
+    sudo mkdir -p /etc/docker-registry/ /etc/docker-registry/certs /etc/docker-registry/private
+
+    sudo openssl req -newkey rsa:4096 -days 3650 -nodes -sha256 \
+    -keyout /etc/docker-registry/private/private-registry.key \
+    -x509 -out /etc/docker-registry/certs/private-registry.crt \
+    -subj "/CN=unused" -addext "subjectAltName=DNS:registry-server"
+
+.. console-output:: console
+    :emphasize-lines: 3,5
+    :caption: Key File and Certificate File Created
+
+    /etc/docker-registry/
+    ├── certs
+    │   └── private-registry.crt
+    └── private
+        └── private-registry.key
+
+This command generates a private key and a self-signed certificate we need, which will be kept in the :file_path:`/etc/docker-registry/` directory. The private key is used in conjunction with the certificate to establish secure connections, both of which will be needed in setting up your private Docker registry. We will not Common Name field; instead, we use SAN. Modify the DNS field to match the domain name of your registry hosting server, i.e., -addext "subjectAltName=DNS:{your own hostname}".
+
+Next, in addition to creating the certificate and a private key for secure communications, we also need to set up a user account to access the registry.
+
+.. code-block:: bash
+    :caption: Command: create an authentication file for logging in to the registry
+
+    sudo apt install apache2-utils -y
+    sudo mkdir -p /etc/docker-registry/auth
+    sudo htpasswd -cBb /etc/docker-registry/auth/passwd user_1 password_1
+
+Here is a Docker Compose file for the registry container configuration. Copy everything from the given YAML file and paste it in an editor. Ensure you correctly specify the paths to the certificate, private key, and passwd files as highlighted below.
+
+.. code-block:: yaml
+    :emphasize-lines: 8,9,12
+    :caption: Docker registry configuration yaml
+
+    services:
+      private-registry:
+        restart: always
+        image: registry:latest
+        ports:
+          - "5000:5000"
+        environment:
+          REGISTRY_HTTP_TLS_CERTIFICATE: /certs/private-registry.crt
+          REGISTRY_HTTP_TLS_KEY: /private/private-registry.key
+          REGISTRY_HTTP_ADDR: 0.0.0.0:5000
+          REGISTRY_AUTH: htpasswd
+          REGISTRY_AUTH_HTPASSWD_PATH: /auth/passwd
+          REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+          REGISTRY_STORAGE_DELETE_ENABLED: "yes"
+        volumes:
+          - /etc/docker-registry/certs:/certs
+          - /etc/docker-registry/private:/private
+          - /etc/docker-registry/auth:/auth
+
+Now we can start up a Docker registry container.
+
+.. code-block:: bash
+    :caption: spawn up a container with docker-compose
+
+    sudo nano docker-compose.yaml
+
+    # copy everything from the given yaml file and paste it in the editor
+    sudo docker compose up -d
+
+Check the status of the container to see if you have successfully set up the private Docker registry. We have completed the setup on the server side.
+
+
+===================================================================
+Configurations for Accessing Docker Registry on a Client Machine
+===================================================================
+
+We now move on to configure a Docker or Kubernetes installed client machine to access the private Docker registry.
+
+First, let's ensure that the hostname or domain name can be mapped to the registry server IP so that it can be reached by this client machine. In my case, I simply add a record of the IP and its hostname to the :file_path:`/etc/hosts` file on every client machine.
+
+.. console-output:: console
+    :emphasize-lines: 3
+    :caption: /etc/hosts
+
+    127.0.0.1 localhost
+    127.0.1.1 test-kube-1
+    192.168.1.177 registry-server
+
+    # The following lines are desirable for IPv6 capable hosts
+    ::1     ip6-localhost ip6-loopback
+    fe00::0 ip6-localnet
+    ff00::0 ip6-mcastprefix
+    ff02::1 ip6-allnodes
+    ff02::2 ip6-allrouters
+
+
+----------------
+For Docker...
+----------------
+
+This section is for configuration in an environment with Docker installed.
+
+Simply transfer a copy of the self-signed certificate in my case it was located at :file_path:`/etc/docker-registry/certs/private-registry.crt` to the client machine. Next, we will need to create a directory under :file_path:`/etc/docker/certs.d` using the same name as the registry's hostname and port number as required by Docker. :file_path:`/etc/docker/certs.d` is the certificate root directory where Docker looks for trusted certificates when connecting to a registry. The full directory path is :file_path:`/etc/docker/certs.d/registry-server` and we will place the certificate here.
+
+.. code-block:: bash
+    :caption: Command: moving the certificate to the client machine (Docker)
+
+    sudo mkdir -p /etc/docker/certs.d/registry-server:5000
+    sudo cp -rf private-registry.crt /etc/docker/certs.d/registry-server:5000/ca.crt
+
+Missing this step or equivalent is why most people are getting the error message `x509: certificate signed by unknown authority` when we try to pull an image from the private registry.
+
+Alternatively, but not officially recommended, Docker also allows you to bypass the certificate verification step by adding the insecure-registries entry. You do not need to perform this step if you already have the certificate in place.
+
+
+.. code-block:: bash
+    :caption: Command: setting insecure registry in Docker
+
+    sudo nano /etc/docker/daemon.json
+    # add the following line to the json file.
+    # {
+    #    "insecure-registries": ["registry-server:5000"]
+    # }
+
+    sudo systemctl restart docker
+
+Let us try logging in.
+
+.. code-block:: bash
+    :caption: Command: logging in a Docker registry
+
+    # sudo docker login -u {username} -p {password} {hostname}:5000
+    sudo docker login -u user_1 -p password_1 registry-server:5000
+
+
+.. console-output:: console
+    :caption: successfully logged in to the Docker registry
+
+    user@test-kube-1:~$ sudo docker login -u user_1 -p password_1 registry-server:5000
+    WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+    WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+    Configure a credential helper to remove this warning. See
+    https://docs.docker.com/engine/reference/commandline/login/#credential-stores
+
+    Login Succeeded
+
+We should be able to interact with the private registry from our Docker client now.
+
+------------------
+For Kubernetes...
+------------------
+
+This section is for configuration in an environment with Kubernetes installed.
+
+Simply transfer a copy of the self-signed certificate in my case it was located at :file_path:`/etc/docker-registry/certs/private-registry.crt` to the client machine. But this time, we need to place the certificate under :file_path:`/usr/local/share/ca-certificates/`.
+
+
+.. code-block:: bash
+    :caption: Command: moving the certificate to the client machine (Kubernetes)
+
+    sudo cp -rf private-registry.crt /usr/local/share/ca-certificates/ca.crt
+    sudo update-ca-certificates
+
+    sudo systemctl daemon-reload
+    sudo systemctl restart containerd
+
+    # check if the certificate is properly installed
+    openssl s_client -connect registry-server:5000 -showcerts </dev/null
+
+Then you can import the certificate into your OS by running `update-ca-certificates`. We shall check if the certificate is properly installed by running the command `openssl s_client -connect registry-server:5000 -showcerts </dev/null`. If the certificate is properly installed, you should see the certificate details as shown below. If we see `Verification error: self-signed certificate` instead, that means we did not configure it properly.
+
+.. console-output:: console
+    :emphasize-lines: 16
+    :caption: Successfully Added the certificate
+
+    user@test-kube-1:~$ openssl s_client -connect registry-server:5000 -showcerts </dev/null
+    obmit...
+
+    -----END CERTIFICATE-----
+    ---
+    Server certificate
+    subject=CN = unused
+    issuer=CN = unused
+    ---
+    No client certificate CA names sent
+    Peer signing digest: SHA256
+    Peer signature type: RSA-PSS
+    Server Temp Key: X25519, 253 bits
+    ---
+    SSL handshake has read 2111 bytes and written 357 bytes
+    Verification: OK
+    ---
+
+    ...
+
+Next, you need to configure a Kubernetes Secret to store the credentials for the private registry. The secret will be used by the Kubernetes pods to pull images from the private registry. Notice that secrets are namespace-specific, only pods in the same namespace can access the secret.
+
+.. code-block:: bash
+    :caption: Command: creating a Kubernetes Secret of docker registry login information
+
+    kubectl create secret docker-registry --dry-run=client private-docker-registry \
+      --namespace {namespace} \
+      --docker-server={hostname}:5000 \
+      --docker-username={user} \
+      --docker-password={password} -o yaml > docker-secret.yaml
+
+    kubectl apply -f docker-secret.yaml
+
+Assuming you are starting a pod using a Kubernetes manifest file, you can specify the secret in the manifest file as shown below.
+
+.. code-block:: yaml
+    :emphasize-lines: 14,15
+    :caption: Using the secret in a Kubernetes manifest file (Example)
+
+    ---
+    apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+        ...
+    spec:
+      ...
+      template:
+        ...
+        spec:
+          containers:
+            ...
+          ...
+          imagePullSecrets:
+            - name: private-docker-registry
+          ...
+
+
+We should be able to pull images from the private registry now in Kubernetes.
+
+========================================
+Basic Commands of Using Docker Registry
+========================================
+
+Below we tag a Docker image and push it to the private registry.
+
+.. console-output:: console
+    :caption: tagging and pushing an image
+
+    user@test-kube-1:~$ sudo docker image ls
+    REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+    hello-world   latest    d2c94e258dcb   14 months ago   13.3kB
+    user@test-kube-1:~$ sudo docker image tag hello-world registry-server:5000/hello-world2:latest
+    user@test-kube-1:~$ sudo docker image push registry-server:5000/hello-world2:latest
+    The push refers to repository [registry-server:5000/hello-world2]
+    ac28800ec8bb: Pushed
+    latest: digest: sha256:d37ada95d47ad12224c205a938129df7a3e52345828b4fa27b03a98825d1e2e7 size: 524
+
+

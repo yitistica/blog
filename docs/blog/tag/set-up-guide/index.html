@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Posts in homelab &#8212; qiuyids.me</title>
+    <title>Posts tagged set-up-guide &#8212; qiuyids.me</title>
   
   
   
@@ -43,7 +43,7 @@
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=6b89569b"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'blog/category/homelab';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'blog/tag/set-up-guide';</script>
     <link rel="icon" href="../../../_static/y_logo_icononly.png"/>
     <link rel="author" title="About these documents" href="../../../about/" />
     <link rel="index" title="Index" href="../../../genindex/" />
@@ -56,7 +56,7 @@
   rel="alternate"
   type="application/atom+xml"
   href="../../../blog/atom.xml"
-  title="Posts in homelab"
+  title="Posts tagged set-up-guide"
 />
 
 
@@ -374,7 +374,7 @@ document.write(`
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page">Posts in homelab</li>
+    <li class="breadcrumb-item active" aria-current="page">Posts...</li>
   </ul>
 </nav>
 </div>
@@ -395,9 +395,9 @@ document.write(`
 <div class="section ablog__collection">
   <h1>
     
-      <span>Posts in
+      <span>Posts tagged
       
-    homelab
+    set-up-guide
     
   </span>
   </h1>
@@ -405,7 +405,7 @@ document.write(`
   
   <div class="section ablog-post">
     <h2 class="ablog-post-title">
-      <a href="../../../posts/epyc_homelab_build/">My Journey of Building and Virtualizing an EPYC Server</a>
+      <a href="../../../posts/set_up_docker_image_registry_for_kubernetes/">Set Up a Private Docker Registry</a>
     </h2>
     <ul class="ablog-archive">
       <li>
@@ -413,7 +413,7 @@ document.write(`
         
         <i class="fa fa-calendar"></i>
         
-        <span>2024-07-01</span>
+        <span>2024-07-10</span>
         
       </li>
       <div class="ablog-sidebar-item ablog__postcard2">
@@ -430,7 +430,7 @@ document.write(`
     </span>
   
   
-  <a href="#">homelab</a>
+  <a href="../../category/devops/">devops</a>
   
   
   
@@ -447,37 +447,25 @@ document.write(`
     </span>
   
   
-  <a href="../../tag/homelab/">homelab</a>
+  <a href="../docker/">Docker</a>
   
   
   
   
   
-  <a href="../../tag/hardware/">hardware</a>
+  <a href="../kubernetes/">kubernetes</a>
   
   
   
   
   
-  <a href="../../tag/amd/">amd</a>
+  <a href="../docker-image-registry/">Docker image registry</a>
   
   
   
   
   
-  <a href="../../tag/epyc/">epyc</a>
-  
-  
-  
-  
-  
-  <a href="../../tag/proxmox/">proxmox</a>
-  
-  
-  
-  
-  
-  <a href="../../tag/share/">share</a>
+  <a href="#">set-up-guide</a>
   
   
   
@@ -486,10 +474,10 @@ document.write(`
 
 </div>
     </ul>
-    <p class="ablog-post-excerpt"><p>Building a virtualized server from scratch is no easy task, at least to me, as a not-so-hardware-savvy guy, it was rather challenging. It even took me 5 trips just to get all the parts in place even if I had done my research and planned for weeks ahead, and even more time to set it up. Overall I was able to get what I wanted, and here I want to share my experience of building an EPYC server at home and some of the troubleshooting I did along the way. Hopefully, if any first timer faces similar issues, they can find some clues here.</p>
+    <p class="ablog-post-excerpt"><p>I initially thought setting up a Docker registry for a local cluster would be a one-line command, but experience showed otherwise. I have browsed around and discovered that much of the obstacle many others and I encountered was due to TLS misconfiguration that was a requirement implicitly imposed by Docker and Kubernetes. In this post, I would like to share how to set up a TLS enabled private Docker registry in a local network. As a disclaimer, this is not really the best practice guide for a production environment, the aim of this post is to illustrate a barebones setup so that you can connect your Docker and Kubernetes environment to a private registry successfully.</p>
 </p>
 
-    <p class="ablog-post-expand"><a href="../../../posts/epyc_homelab_build/"><em>Read more ...</em></a></p>
+    <p class="ablog-post-expand"><a href="../../../posts/set_up_docker_image_registry_for_kubernetes/"><em>Read more ...</em></a></p>
     <hr/>
   </div>
   

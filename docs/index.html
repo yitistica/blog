@@ -29,8 +29,9 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=6e3b80f4" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=7b4e0dc9" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -40,6 +41,8 @@
     <script src="_static/documentation_options.js?v=187304be"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=6b89569b"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="icon" href="_static/y_logo_icononly.png"/>
@@ -361,6 +364,10 @@ document.write(`
 <section id="posts">
 <h1>Posts<a class="headerlink" href="#posts" title="Link to this heading">#</a></h1>
 <ul class="postlist-style-disc postlist">
+<li class="ablog-post"><p class="ablog-post-title">2024-07-10 - <a class="reference internal" href="posts/set_up_docker_image_registry_for_kubernetes/">Set Up a Private Docker Registry</a></p>
+<p class="ablog-post-excerpt">I initially thought setting up a Docker registry for a local cluster would be a one-line command, but experience showed otherwise. I have browsed around and discovered that much of the obstacle many others and I encountered was due to TLS misconfiguration that was a requirement implicitly imposed by Docker and Kubernetes. In this post, I would like to share how to set up a TLS enabled private Docker registry in a local network. As a disclaimer, this is not really the best practice guide for a production environment, the aim of this post is to illustrate a barebones setup so that you can connect your Docker and Kubernetes environment to a private registry successfully.</p>
+<p class="ablog-post-expand"><a class="reference internal" href="posts/set_up_docker_image_registry_for_kubernetes/"><em>read more ...</em></a></p>
+</li>
 <li class="ablog-post"><p class="ablog-post-title">2024-07-01 - <a class="reference internal" href="posts/epyc_homelab_build/">My Journey of Building and Virtualizing an EPYC Server</a></p>
 <p class="ablog-post-excerpt">Building a virtualized server from scratch is no easy task, at least to me, as a not-so-hardware-savvy guy, it was rather challenging. It even took me 5 trips just to get all the parts in place even if I had done my research and planned for weeks ahead, and even more time to set it up. Overall I was able to get what I wanted, and here I want to share my experience of building an EPYC server at home and some of the troubleshooting I did along the way. Hopefully, if any first timer faces similar issues, they can find some clues here.</p>
 <p class="ablog-post-expand"><a class="reference internal" href="posts/epyc_homelab_build/"><em>read more ...</em></a></p>

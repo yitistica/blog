@@ -28,8 +28,9 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=6e3b80f4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=7b4e0dc9" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -39,6 +40,8 @@
     <script src="../../_static/documentation_options.js?v=187304be"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6b89569b"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'blog/2024';</script>
     <link rel="icon" href="../../_static/y_logo_icononly.png"/>
@@ -399,6 +402,84 @@ document.write(`
   </span>
   </h1>
   
+  
+  <div class="section ablog-post">
+    <h2 class="ablog-post-title">
+      <a href="../../posts/set_up_docker_image_registry_for_kubernetes/">Set Up a Private Docker Registry</a>
+    </h2>
+    <ul class="ablog-archive">
+      <li>
+        
+        
+        <i class="fa fa-calendar"></i>
+        
+        <span>2024-07-10</span>
+        
+      </li>
+      <div class="ablog-sidebar-item ablog__postcard2">
+
+
+
+
+
+<li id="ablog-sidebar-item category ablog__category">
+  <span>
+    
+    <i class="fa-fw fa fa-folder-open"></i>
+    
+    </span>
+  
+  
+  <a href="../category/devops/">devops</a>
+  
+  
+  
+</li>
+
+
+<li id="ablog-sidebar-item tags ablog__tags">
+  <span>
+    
+    
+    <i class="fa-fw fa fa-tags"></i>
+    
+    
+    </span>
+  
+  
+  <a href="../tag/docker/">Docker</a>
+  
+  
+  
+  
+  
+  <a href="../tag/kubernetes/">kubernetes</a>
+  
+  
+  
+  
+  
+  <a href="../tag/docker-image-registry/">Docker image registry</a>
+  
+  
+  
+  
+  
+  <a href="../tag/set-up-guide/">set-up-guide</a>
+  
+  
+  
+</li>
+
+
+</div>
+    </ul>
+    <p class="ablog-post-excerpt"><p>I initially thought setting up a Docker registry for a local cluster would be a one-line command, but experience showed otherwise. I have browsed around and discovered that much of the obstacle many others and I encountered was due to TLS misconfiguration that was a requirement implicitly imposed by Docker and Kubernetes. In this post, I would like to share how to set up a TLS enabled private Docker registry in a local network. As a disclaimer, this is not really the best practice guide for a production environment, the aim of this post is to illustrate a barebones setup so that you can connect your Docker and Kubernetes environment to a private registry successfully.</p>
+</p>
+
+    <p class="ablog-post-expand"><a href="../../posts/set_up_docker_image_registry_for_kubernetes/"><em>Read more ...</em></a></p>
+    <hr/>
+  </div>
   
   <div class="section ablog-post">
     <h2 class="ablog-post-title">

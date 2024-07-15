@@ -1,0 +1,962 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Set Up a Private Docker Registry &#8212; qiuyids.me</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=7b4e0dc9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=187304be"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6b89569b"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'posts/set_up_docker_image_registry_for_kubernetes';</script>
+    <link rel="icon" href="../../_static/y_logo_icononly.png"/>
+    <link rel="author" title="About these documents" href="../../about/" />
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search/"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/yitistica_logo.png" class="logo__image only-dark" alt="qiuyids.me - Home"/>
+    <script>document.write(`<img src="../../_static/yitistica_logo.png" class="logo__image only-light" alt="qiuyids.me - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../custom-post-list/">
+    Posts
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../about/">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/yitistica" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.linkedin.com/in/qiuyids" title="Linkedin" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-linkedin fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Linkedin</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../custom-post-list/">
+    Posts
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../about/">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/yitistica" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.linkedin.com/in/qiuyids" title="Linkedin" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-linkedin fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Linkedin</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+    <div class="sidebar-start-items__item">
+    
+    
+    <h5>
+        
+        <h4 class="meta_section_header">About</h4>
+        <ul class="post_meta_ul">
+            
+            <li>
+                <span>
+                
+                <i class="fa fa-calendar"></i>
+                
+                2024-07-10
+                </span>
+            </li>
+            
+            <li>
+                <span>
+                
+                </span>
+            </li>
+        </ul>
+        
+    </h5>
+</div>
+
+    
+
+<h4 class="meta_section_header"><a href="../../blog/tag/">With Tags</a></h4>
+<ul class="tags_ul">
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/docker/"><span class="sd-badge">Docker</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/kubernetes/"><span class="sd-badge">kubernetes</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/docker-image-registry/"><span class="sd-badge">Docker image registry</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/set-up-guide/"><span class="sd-badge">set-up-guide</span></a></li>
+    
+    
+</ul>
+
+    
+
+
+<div>
+<h4 class="meta_section_header">
+  <a href="../../blog/category/">On the Same Topic</a>
+</h4>
+<ul class="category_ul">
+  
+  
+  <li class="category_li">
+    <a href="../../blog/category/devops/"><span>devops (1)</span></a>
+  </li>
+  
+  
+  
+  
+</ul>
+</div>
+
+    <div>
+<h4 class="meta_section_header">
+  
+  
+  <a href="../../blog/">Recently Written</a>
+  
+  
+</h4>
+<ul class="category_ul">
+  
+  <li class="category_li">
+    <a href="../epyc_homelab_build/">
+      <span>My Journey of Building and Virtualizing an EPYC Server</span>
+    </a>
+     <span> - 2024-07-01</span>
+  </li>
+  
+</ul>
+</div>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Set Up a...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+<section id="set-up-a-private-docker-registry">
+<h1>Set Up a Private Docker Registry<a class="headerlink" href="#set-up-a-private-docker-registry" title="Link to this heading">#</a></h1>
+<p>I initially thought setting up a Docker registry for a local cluster would be a one-line command, but experience showed otherwise. I have browsed around and discovered that much of the obstacle many others and I encountered was due to TLS misconfiguration that was a requirement implicitly imposed by Docker and Kubernetes. In this post, I would like to share how to set up a TLS enabled private Docker registry in a local network. As a disclaimer, this is not really the best practice guide for a production environment, the aim of this post is to illustrate a barebones setup so that you can connect your Docker and Kubernetes environment to a private registry successfully.</p>
+<p>For this demonstration, I will be using 2 VMs: 1 hosting server for a Docker registry and 1 machine with Docker and Kubernetes installed that acts as a client machine to the registry. All machines are running on the same local network. The OS of each machine is Ubuntu Server 24.04 LTS. My Docker version is 27.0.3 and 1.46 for API version. My Kubernetes version is 1.30.2 (both client and server). And the registry image I will be using is registry:2.8.3.</p>
+<p>Setting up consists of the following steps:</p>
+<ol class="arabic simple">
+<li><p>In the registry hosting machine, install Docker;</p></li>
+<li><p>In the registry hosting machine,implement security measures so that it can be accessed by other machines;</p></li>
+<li><p>In the registry hosting machine, set up a private Docker registry by running a registry container;</p></li>
+<li><p>In any other client-to-registry machines with Docker or Kubernetes, ensure network connectivity to the hosting machine, configure Docker and Kubernetes to use the private registry.</p></li>
+</ol>
+<section id="what-is-private-docker-registry">
+<h2>What is Private Docker Registry?<a class="headerlink" href="#what-is-private-docker-registry" title="Link to this heading">#</a></h2>
+<p>Docker registry is essentially a centralized storage and distribution point for Docker images. If you’ve used Docker before, you’re probably familiar with Docker Hub - it’s the default registry when you run Docker pull. A private Docker registry, on the other hand, is a self-hosted version that you can use to store your own images.</p>
+<p>People set up private Docker registries for various reasons. In my case, I need a place to store locally built images without constantly pushing them to a public registry, which saves time and keeps my images private. For larger enterprises, there might be additional motivations like security measures, meeting specific compliance requirements, or better integration with their custom CI/CD pipelines in their private infrastructure.</p>
+</section>
+<section id="docker-installation-on-ubuntu">
+<h2>Docker Installation on Ubuntu<a class="headerlink" href="#docker-installation-on-ubuntu" title="Link to this heading">#</a></h2>
+<p>If you have installed Docker on your registry hosting machine already, you may skip this entire section.</p>
+<p><strong>Wipe Out the Previously Installed Docker</strong></p>
+<p>If you want to start fresh, run the following command to remove the installed Docker related packages.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Command: remove all Docker related packages</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done</span>
+</pre></div>
+</div>
+</div>
+<p><strong>1. Installing Other Needed Packages</strong></p>
+<p>We will need curl to download the Docker’s GPG key and ca-certificates for certificates. By default, ca-certificates and curl have been installed on Ubuntu. Run the following commands to install the packages.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Command: install ca-certificates and curl</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get update</span>
+<span class="go">sudo apt-get install ca-certificates curl</span>
+</pre></div>
+</div>
+</div>
+<p><strong>2 Adding Docker’s official GPG key</strong></p>
+<p>The package manager will use this GPG key to verify the signature on Docker packages for Docker installation. We should download the GPG key and place it in the <span class="file-path">/etc/apt/keyrings</span> directory for later use. You may also import it into the system’s GPG keyring, although it is not necessary for our installation.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Command: download the Docker’s GPG key &amp; import it into the system’s GPG keyring</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo install -m 0755 -d /etc/apt/keyrings</span>
+<span class="go">sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc</span>
+<span class="go">sudo chmod a+r /etc/apt/keyrings/docker.asc</span>
+<span class="gp"># </span>*import<span class="w"> </span>the<span class="w"> </span>GPG<span class="w"> </span>key:
+<span class="go">sudo gpg --import  /etc/apt/keyrings/docker.asc</span>
+</pre></div>
+</div>
+</div>
+<div class="no-copybutton console-output highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="go">gpg: key 8D81803C0EBFCD88: public key &quot;Docker Release (CE deb) &lt;docker@docker.com&gt;&quot; imported</span>
+<span class="linenos">2</span><span class="go">gpg: Total number processed: 1</span>
+<span class="linenos">3</span><span class="go">gpg:               imported: 1</span>
+</pre></div>
+</div>
+<p>Unfortunately, Some users, myself included, may encounter issues with Docker’s website being blocked by firewalls. If your server hasn’t been configured with a proxy, you might need to manually download the required file and transfer it to the server yourself.</p>
+<div class="no-copybutton console-output highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">user@test-server-1:~$ </span>sudo<span class="w"> </span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://download.docker.com/linux/ubuntu/gpg<span class="w"> </span>-o<span class="w"> </span>/etc/apt/keyrings/docker.asc
+<span class="hll"><span class="linenos">2</span><span class="go">curl: (28) Failed to connect to download.docker.com port 443 after 136127 ms: Couldn&#39;t connect to server</span>
+</span></pre></div>
+</div>
+<p>Use another machine with a proxy set up that can access Docker’s website to download the GPG key file from <a class="reference external" href="https://download.docker.com/linux/ubuntu/gpg">https://download.docker.com/linux/ubuntu/gpg</a>. Transfer it to the given location on the target machine. Ensure that you modify the filename extension of the GPG file to .asc to help with proper recognition by the system. Then, perform the same operations as we did after the curl operation for the GPG file.</p>
+<p><strong>3 Add the repository to APT sources</strong></p>
+<p>Add the Docker repository to your system’s package sources, which allows you to install and update Docker using the package manager.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Command: add the repository to Apt sources</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">echo \</span>
+<span class="go">  &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \</span>
+<span class="gp">  $</span><span class="o">(</span>.<span class="w"> </span>/etc/os-release<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$VERSION_CODENAME</span><span class="s2">&quot;</span><span class="o">)</span><span class="w"> </span>stable<span class="s2">&quot; | \</span>
+<span class="s2">  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null</span>
+
+<span class="go">sudo apt-get update</span>
+</pre></div>
+</div>
+</div>
+<p>What is commands does it create a configuration file at <span class="file-path">/etc/apt/sources.list.d/docker.list</span> directory and it will overwrite the existing <span class="file-path">docker.list</span> file if it exists. Ensure the signed-by argument is pointing to the right GPG key file we downloaded earlier.</p>
+<div class="literal-block-wrapper console-output docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">/etc/apt/sources.list.d/docker.list</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="go">deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu       noble stable</span>
+</pre></div>
+</div>
+</div>
+<p>For mine, I have to use a mirror.</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Command: add the repository to Apt sources (with a mirror)</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># for my case:</span>
+<span class="nb">echo</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;deb [arch=</span><span class="k">$(</span>dpkg<span class="w"> </span>--print-architecture<span class="k">)</span><span class="s2"> signed-by=/etc/apt/keyrings/docker.asc] http://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/ubuntu \</span>
+<span class="s2">  </span><span class="k">$(</span>.<span class="w"> </span>/etc/os-release<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$VERSION_CODENAME</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2"> stable&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/apt/sources.list.d/docker.list<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+
+sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+</pre></div>
+</div>
+</div>
+<p><strong>4. Docker Installation</strong></p>
+<p>Before was the preparation, now we are ready to install Docker with the following command.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Command: install Docker</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>docker-ce<span class="w"> </span>docker-ce-cli<span class="w"> </span>containerd.io<span class="w"> </span>docker-buildx-plugin<span class="w"> </span>docker-compose-plugin<span class="w"> </span>-y
+</pre></div>
+</div>
+</div>
+<p><strong>5.* Adding Docker Image Registries</strong></p>
+<p>Let us try pulling a Docker image from Docker Hub to see if Docker installation is successful. If you encounter an error as below, it is likely due to Docker Hub being blocked by your firewall. You can add a registry mirror to the Docker configuration file to get around this issue.</p>
+<div class="no-copybutton console-output highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">user@test-server-1:~$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>pull<span class="w"> </span>hello-world
+<span class="linenos">2</span><span class="go">Using default tag: latest</span>
+<span class="linenos">3</span><span class="go">latest: Pulling from library/hello-world</span>
+<span class="linenos">4</span><span class="go">c1ec31eb5944: Retrying in 1 second</span>
+<span class="hll"><span class="linenos">5</span><span class="go">error pulling image configuration: download failed after attempts=6: dial tcp 192.133.77.133:443: i/o timeout</span>
+</span></pre></div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Command: add mirrors to the Docker configuration file</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># adding the registry mirrors to the docker configuration file:</span>
+sudo<span class="w"> </span>tee<span class="w"> </span>/etc/docker/daemon.json<span class="w"> </span><span class="s">&lt;&lt;-&#39;EOF&#39;</span>
+<span class="s">{</span>
+<span class="s">    &quot;registry-mirrors&quot;: [</span>
+<span class="s">        &quot;https://docker.m.daocloud.io&quot;,</span>
+<span class="s">        &quot;https://dockerproxy.com&quot;,</span>
+<span class="s">        &quot;https://docker.nju.edu.cn&quot;,</span>
+<span class="s">        &quot;https://docker.mirrors.ustc.edu.cn&quot;</span>
+<span class="s">    ]</span>
+<span class="s">}</span>
+<span class="s">EOF</span>
+
+<span class="c1"># restarting Docker services:</span>
+sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>docker
+</pre></div>
+</div>
+</div>
+<p>Notice that the mirrors I listed here are also not necessarily stable and for me specifically, please supply the ones you trust.</p>
+</section>
+<section id="setting-up-a-private-docker-image-registry">
+<h2>Setting Up a Private Docker Image Registry<a class="headerlink" href="#setting-up-a-private-docker-image-registry" title="Link to this heading">#</a></h2>
+<p>As stated in the introduction, for clients to successfully communicate with the private registry, we need to address the TLS issue first. The Docker daemon, which is a background process responsible for managing Docker objects (e.g., images, containers, networks), tries to pull an image from a Docker registry, in our case, a private registry. It will verify the authenticity of the registry by checking the certificate. If the certificate is not signed by a trusted Certificate Authority (CA), the Docker daemon and Kubernetes will refuse to connect to the registry unless such certificates have already been added to the trusted certificate root store in your client machines. This is exactly what we want to do: 1. generate a self-signed certificate for the registry, 2. import the certificate into every client’s trust store.</p>
+<p>First, let us note down the hostname or domain name of the registry hosting server. For mine, I will assign the hostname as <cite>registry-server</cite>. We will use OpenSSL to create a self-signed certificate for the registry.</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Command: creating a self-signed certificate</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/docker-registry/<span class="w"> </span>/etc/docker-registry/certs<span class="w"> </span>/etc/docker-registry/private
+
+sudo<span class="w"> </span>openssl<span class="w"> </span>req<span class="w"> </span>-newkey<span class="w"> </span>rsa:4096<span class="w"> </span>-days<span class="w"> </span><span class="m">3650</span><span class="w"> </span>-nodes<span class="w"> </span>-sha256<span class="w"> </span><span class="se">\</span>
+-keyout<span class="w"> </span>/etc/docker-registry/private/private-registry.key<span class="w"> </span><span class="se">\</span>
+-x509<span class="w"> </span>-out<span class="w"> </span>/etc/docker-registry/certs/private-registry.crt<span class="w"> </span><span class="se">\</span>
+-subj<span class="w"> </span><span class="s2">&quot;/CN=unused&quot;</span><span class="w"> </span>-addext<span class="w"> </span><span class="s2">&quot;subjectAltName=DNS:registry-server&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper console-output docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Key File and Certificate File Created</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="go">/etc/docker-registry/</span>
+<span class="linenos">2</span><span class="go">├── certs</span>
+<span class="hll"><span class="linenos">3</span><span class="go">│   └── private-registry.crt</span>
+</span><span class="linenos">4</span><span class="go">└── private</span>
+<span class="hll"><span class="linenos">5</span><span class="go">    └── private-registry.key</span>
+</span></pre></div>
+</div>
+</div>
+<p>This command generates a private key and a self-signed certificate we need, which will be kept in the <span class="file-path">/etc/docker-registry/</span> directory. The private key is used in conjunction with the certificate to establish secure connections, both of which will be needed in setting up your private Docker registry. We will not Common Name field; instead, we use SAN. Modify the DNS field to match the domain name of your registry hosting server, i.e., -addext “subjectAltName=DNS:{your own hostname}”.</p>
+<p>Next, in addition to creating the certificate and a private key for secure communications, we also need to set up a user account to access the registry.</p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Command: create an authentication file for logging in to the registry</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>apache2-utils<span class="w"> </span>-y
+sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/docker-registry/auth
+sudo<span class="w"> </span>htpasswd<span class="w"> </span>-cBb<span class="w"> </span>/etc/docker-registry/auth/passwd<span class="w"> </span>user_1<span class="w"> </span>password_1
+</pre></div>
+</div>
+</div>
+<p>Here is a Docker Compose file for the registry container configuration. Copy everything from the given YAML file and paste it in an editor. Ensure you correctly specify the paths to the certificate, private key, and passwd files as highlighted below.</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Docker registry configuration yaml</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">private-registry</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">registry:latest</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5000:5000&quot;</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="hll"><span class="w">      </span><span class="nt">REGISTRY_HTTP_TLS_CERTIFICATE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/certs/private-registry.crt</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">REGISTRY_HTTP_TLS_KEY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/private/private-registry.key</span>
+</span><span class="w">      </span><span class="nt">REGISTRY_HTTP_ADDR</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0:5000</span>
+<span class="w">      </span><span class="nt">REGISTRY_AUTH</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">htpasswd</span>
+<span class="hll"><span class="w">      </span><span class="nt">REGISTRY_AUTH_HTPASSWD_PATH</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/auth/passwd</span>
+</span><span class="w">      </span><span class="nt">REGISTRY_AUTH_HTPASSWD_REALM</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Registry Realm</span>
+<span class="w">      </span><span class="nt">REGISTRY_STORAGE_DELETE_ENABLED</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;yes&quot;</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/docker-registry/certs:/certs</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/docker-registry/private:/private</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/docker-registry/auth:/auth</span>
+</pre></div>
+</div>
+</div>
+<p>Now we can start up a Docker registry container.</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">spawn up a container with docker-compose</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>nano<span class="w"> </span>docker-compose.yaml
+
+<span class="c1"># copy everything from the given yaml file and paste it in the editor</span>
+sudo<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</div>
+<p>Check the status of the container to see if you have successfully set up the private Docker registry. We have completed the setup on the server side.</p>
+</section>
+<section id="configurations-for-accessing-docker-registry-on-a-client-machine">
+<h2>Configurations for Accessing Docker Registry on a Client Machine<a class="headerlink" href="#configurations-for-accessing-docker-registry-on-a-client-machine" title="Link to this heading">#</a></h2>
+<p>We now move on to configure a Docker or Kubernetes installed client machine to access the private Docker registry.</p>
+<p>First, let’s ensure that the hostname or domain name can be mapped to the registry server IP so that it can be reached by this client machine. In my case, I simply add a record of the IP and its hostname to the <span class="file-path">/etc/hosts</span> file on every client machine.</p>
+<div class="literal-block-wrapper console-output docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">/etc/hosts</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="go">127.0.0.1 localhost</span>
+<span class="linenos"> 2</span><span class="go">127.0.1.1 test-kube-1</span>
+<span class="hll"><span class="linenos"> 3</span><span class="go">192.168.1.177 registry-server</span>
+</span><span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="gp"># </span>The<span class="w"> </span>following<span class="w"> </span>lines<span class="w"> </span>are<span class="w"> </span>desirable<span class="w"> </span><span class="k">for</span><span class="w"> </span>IPv6<span class="w"> </span>capable<span class="w"> </span>hosts
+<span class="linenos"> 6</span><span class="go">::1     ip6-localhost ip6-loopback</span>
+<span class="linenos"> 7</span><span class="go">fe00::0 ip6-localnet</span>
+<span class="linenos"> 8</span><span class="go">ff00::0 ip6-mcastprefix</span>
+<span class="linenos"> 9</span><span class="go">ff02::1 ip6-allnodes</span>
+<span class="linenos">10</span><span class="go">ff02::2 ip6-allrouters</span>
+</pre></div>
+</div>
+</div>
+<section id="for-docker">
+<h3>For Docker…<a class="headerlink" href="#for-docker" title="Link to this heading">#</a></h3>
+<p>This section is for configuration in an environment with Docker installed.</p>
+<p>Simply transfer a copy of the self-signed certificate in my case it was located at <span class="file-path">/etc/docker-registry/certs/private-registry.crt</span> to the client machine. Next, we will need to create a directory under <span class="file-path">/etc/docker/certs.d</span> using the same name as the registry’s hostname and port number as required by Docker. <span class="file-path">/etc/docker/certs.d</span> is the certificate root directory where Docker looks for trusted certificates when connecting to a registry. The full directory path is <span class="file-path">/etc/docker/certs.d/registry-server</span> and we will place the certificate here.</p>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Command: moving the certificate to the client machine (Docker)</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/docker/certs.d/registry-server:5000
+sudo<span class="w"> </span>cp<span class="w"> </span>-rf<span class="w"> </span>private-registry.crt<span class="w"> </span>/etc/docker/certs.d/registry-server:5000/ca.crt
+</pre></div>
+</div>
+</div>
+<p>Missing this step or equivalent is why most people are getting the error message <cite>x509: certificate signed by unknown authority</cite> when we try to pull an image from the private registry.</p>
+<p>Alternatively, but not officially recommended, Docker also allows you to bypass the certificate verification step by adding the insecure-registries entry. You do not need to perform this step if you already have the certificate in place.</p>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">Command: setting insecure registry in Docker</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/docker/daemon.json
+<span class="c1"># add the following line to the json file.</span>
+<span class="c1"># {</span>
+<span class="c1">#    &quot;insecure-registries&quot;: [&quot;registry-server:5000&quot;]</span>
+<span class="c1"># }</span>
+
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>docker
+</pre></div>
+</div>
+</div>
+<p>Let us try logging in.</p>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">Command: logging in a Docker registry</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># sudo docker login -u {username} -p {password} {hostname}:5000</span>
+sudo<span class="w"> </span>docker<span class="w"> </span>login<span class="w"> </span>-u<span class="w"> </span>user_1<span class="w"> </span>-p<span class="w"> </span>password_1<span class="w"> </span>registry-server:5000
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper console-output docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">successfully logged in to the Docker registry</span><a class="headerlink" href="#id18" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">user@test-kube-1:~$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>login<span class="w"> </span>-u<span class="w"> </span>user_1<span class="w"> </span>-p<span class="w"> </span>password_1<span class="w"> </span>registry-server:5000
+<span class="linenos">2</span><span class="go">WARNING! Using --password via the CLI is insecure. Use --password-stdin.</span>
+<span class="linenos">3</span><span class="go">WARNING! Your password will be stored unencrypted in /root/.docker/config.json.</span>
+<span class="linenos">4</span><span class="go">Configure a credential helper to remove this warning. See</span>
+<span class="linenos">5</span><span class="gp">https://docs.docker.com/engine/reference/commandline/login/#</span>credential-stores
+<span class="linenos">6</span>
+<span class="linenos">7</span><span class="go">Login Succeeded</span>
+</pre></div>
+</div>
+</div>
+<p>We should be able to interact with the private registry from our Docker client now.</p>
+</section>
+<section id="for-kubernetes">
+<h3>For Kubernetes…<a class="headerlink" href="#for-kubernetes" title="Link to this heading">#</a></h3>
+<p>This section is for configuration in an environment with Kubernetes installed.</p>
+<p>Simply transfer a copy of the self-signed certificate in my case it was located at <span class="file-path">/etc/docker-registry/certs/private-registry.crt</span> to the client machine. But this time, we need to place the certificate under <span class="file-path">/usr/local/share/ca-certificates/</span>.</p>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text">Command: moving the certificate to the client machine (Kubernetes)</span><a class="headerlink" href="#id19" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>-rf<span class="w"> </span>private-registry.crt<span class="w"> </span>/usr/local/share/ca-certificates/ca.crt
+sudo<span class="w"> </span>update-ca-certificates
+
+sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>containerd
+
+<span class="c1"># check if the certificate is properly installed</span>
+openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span>registry-server:5000<span class="w"> </span>-showcerts<span class="w"> </span>&lt;/dev/null
+</pre></div>
+</div>
+</div>
+<p>Then you can import the certificate into your OS by running <cite>update-ca-certificates</cite>. We shall check if the certificate is properly installed by running the command <cite>openssl s_client -connect registry-server:5000 -showcerts &lt;/dev/null</cite>. If the certificate is properly installed, you should see the certificate details as shown below. If we see <cite>Verification error: self-signed certificate</cite> instead, that means we did not configure it properly.</p>
+<div class="literal-block-wrapper console-output docutils container" id="id20">
+<div class="code-block-caption"><span class="caption-text">Successfully Added the certificate</span><a class="headerlink" href="#id20" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">user@test-kube-1:~$ </span>openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span>registry-server:5000<span class="w"> </span>-showcerts<span class="w"> </span>&lt;/dev/null
+<span class="linenos"> 2</span><span class="go">obmit...</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="go">-----END CERTIFICATE-----</span>
+<span class="linenos"> 5</span><span class="go">---</span>
+<span class="linenos"> 6</span><span class="go">Server certificate</span>
+<span class="linenos"> 7</span><span class="go">subject=CN = unused</span>
+<span class="linenos"> 8</span><span class="go">issuer=CN = unused</span>
+<span class="linenos"> 9</span><span class="go">---</span>
+<span class="linenos">10</span><span class="go">No client certificate CA names sent</span>
+<span class="linenos">11</span><span class="go">Peer signing digest: SHA256</span>
+<span class="linenos">12</span><span class="go">Peer signature type: RSA-PSS</span>
+<span class="linenos">13</span><span class="go">Server Temp Key: X25519, 253 bits</span>
+<span class="linenos">14</span><span class="go">---</span>
+<span class="linenos">15</span><span class="go">SSL handshake has read 2111 bytes and written 357 bytes</span>
+<span class="hll"><span class="linenos">16</span><span class="go">Verification: OK</span>
+</span><span class="linenos">17</span><span class="go">---</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="go">...</span>
+</pre></div>
+</div>
+</div>
+<p>Next, you need to configure a Kubernetes Secret to store the credentials for the private registry. The secret will be used by the Kubernetes pods to pull images from the private registry. Notice that secrets are namespace-specific, only pods in the same namespace can access the secret.</p>
+<div class="literal-block-wrapper docutils container" id="id21">
+<div class="code-block-caption"><span class="caption-text">Command: creating a Kubernetes Secret of docker registry login information</span><a class="headerlink" href="#id21" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>docker-registry<span class="w"> </span>--dry-run<span class="o">=</span>client<span class="w"> </span>private-docker-registry<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--namespace<span class="w"> </span><span class="o">{</span>namespace<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--docker-server<span class="o">={</span>hostname<span class="o">}</span>:5000<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--docker-username<span class="o">={</span>user<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--docker-password<span class="o">={</span>password<span class="o">}</span><span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span>&gt;<span class="w"> </span>docker-secret.yaml
+
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>docker-secret.yaml
+</pre></div>
+</div>
+</div>
+<p>Assuming you are starting a pod using a Kubernetes manifest file, you can specify the secret in the manifest file as shown below.</p>
+<div class="literal-block-wrapper docutils container" id="id22">
+<div class="code-block-caption"><span class="caption-text">Using the secret in a Kubernetes manifest file (Example)</span><a class="headerlink" href="#id22" title="Link to this code">#</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DaemonSet</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">template</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">spec</span><span class="p p-Indicator">:</span>
+<span class="w">      </span><span class="nt">containers</span><span class="p">:</span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="hll"><span class="w">      </span><span class="nt">imagePullSecrets</span><span class="p">:</span>
+</span><span class="hll"><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">private-docker-registry</span>
+</span><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</div>
+<p>We should be able to pull images from the private registry now in Kubernetes.</p>
+</section>
+</section>
+<section id="basic-commands-of-using-docker-registry">
+<h2>Basic Commands of Using Docker Registry<a class="headerlink" href="#basic-commands-of-using-docker-registry" title="Link to this heading">#</a></h2>
+<p>Below we tag a Docker image and push it to the private registry.</p>
+<div class="literal-block-wrapper console-output docutils container" id="id23">
+<div class="code-block-caption"><span class="caption-text">tagging and pushing an image</span><a class="headerlink" href="#id23" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">user@test-kube-1:~$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>image<span class="w"> </span>ls
+<span class="linenos">2</span><span class="go">REPOSITORY    TAG       IMAGE ID       CREATED         SIZE</span>
+<span class="linenos">3</span><span class="go">hello-world   latest    d2c94e258dcb   14 months ago   13.3kB</span>
+<span class="linenos">4</span><span class="gp">user@test-kube-1:~$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>image<span class="w"> </span>tag<span class="w"> </span>hello-world<span class="w"> </span>registry-server:5000/hello-world2:latest
+<span class="linenos">5</span><span class="gp">user@test-kube-1:~$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>image<span class="w"> </span>push<span class="w"> </span>registry-server:5000/hello-world2:latest
+<span class="linenos">6</span><span class="go">The push refers to repository [registry-server:5000/hello-world2]</span>
+<span class="linenos">7</span><span class="go">ac28800ec8bb: Pushed</span>
+<span class="linenos">8</span><span class="go">latest: digest: sha256:d37ada95d47ad12224c205a938129df7a3e52345828b4fa27b03a98825d1e2e7 size: 524</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+  
+  
+
+
+<div class="section ablog__prev-next">
+  <span class="ablog__prev">
+    
+    
+    <a href="../epyc_homelab_build/">
+      
+      <i class="fa fa-arrow-circle-left"></i>
+      
+      <span>My Journey of Building and Virtualizing an EPYC Server</span>
+    </a>
+    
+  </span>
+  <span class="ablog__spacer">&nbsp;</span>
+  <span class="ablog__next">
+    
+  </span>
+</div>
+
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-private-docker-registry">What is Private Docker Registry?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docker-installation-on-ubuntu">Docker Installation on Ubuntu</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-a-private-docker-image-registry">Setting Up a Private Docker Image Registry</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configurations-for-accessing-docker-registry-on-a-client-machine">Configurations for Accessing Docker Registry on a Client Machine</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#for-docker">For Docker…</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#for-kubernetes">For Kubernetes…</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-commands-of-using-docker-registry">Basic Commands of Using Docker Registry</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Yi Q.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
