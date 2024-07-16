@@ -620,7 +620,7 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class=
 </section>
 <section id="setting-up-a-private-docker-image-registry">
 <h2>Setting Up a Private Docker Image Registry<a class="headerlink" href="#setting-up-a-private-docker-image-registry" title="Link to this heading">#</a></h2>
-<p>As stated in the introduction, for clients to successfully communicate with the private registry, we need to address the TLS issue first. The Docker daemon, which is a background process responsible for managing Docker objects (e.g., images, containers, networks), tries to pull an image from a Docker registry, in our case, a private registry. It will verify the authenticity of the registry by checking the certificate. If the certificate is not signed by a trusted Certificate Authority (CA), the Docker daemon and Kubernetes will refuse to connect to the registry unless such certificates have already been added to the trusted certificate root store in your client machines. This is exactly what we want to do: 1. generate a self-signed certificate for the registry, 2. import the certificate into every client’s trust store.</p>
+<p>As stated in the introduction, for clients to successfully communicate with a private registry, we need to address the TLS issue first. When the Docker daemon, which is a background process responsible for managing Docker objects (e.g., images, containers, networks), tries to pull an image from a Docker registry, in our case, a private registry, it will verify the authenticity of the registry by checking the certificate. If the certificate is not signed by a trusted Certificate Authority (CA), the Docker daemon and Kubernetes will refuse to connect to the registry unless such certificates have already been added to the trusted certificate root store in your client machines. This is exactly what we want to do: 1. generate a self-signed certificate for the registry, 2. import the certificate into every client’s trust store.</p>
 <p>First, let us note down the hostname or domain name of the registry hosting server. For mine, I will assign the hostname as <cite>registry-server</cite>. We will use OpenSSL to create a self-signed certificate for the registry.</p>
 <div class="literal-block-wrapper docutils container" id="id9">
 <div class="code-block-caption"><span class="caption-text">Command: creating a self-signed certificate</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
@@ -681,8 +681,8 @@ sudo<span class="w"> </span>htpasswd<span class="w"> </span>-cBb<span class="w">
 <div class="literal-block-wrapper docutils container" id="id13">
 <div class="code-block-caption"><span class="caption-text">spawn up a container with docker-compose</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>nano<span class="w"> </span>docker-compose.yaml
-
 <span class="c1"># copy everything from the given yaml file and paste it in the editor</span>
+
 sudo<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
@@ -691,8 +691,8 @@ sudo<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"
 </section>
 <section id="configurations-for-accessing-docker-registry-on-a-client-machine">
 <h2>Configurations for Accessing Docker Registry on a Client Machine<a class="headerlink" href="#configurations-for-accessing-docker-registry-on-a-client-machine" title="Link to this heading">#</a></h2>
-<p>We now move on to configure a Docker or Kubernetes installed client machine to access the private Docker registry.</p>
-<p>First, let’s ensure that the hostname or domain name can be mapped to the registry server IP so that it can be reached by this client machine. In my case, I simply add a record of the IP and its hostname to the <span class="file-path">/etc/hosts</span> file on every client machine.</p>
+<p>We now move on to configure a Docker and Kubernetes installed client machine to access the private Docker registry.</p>
+<p>First, let’s ensure that the hostname or domain name has been mapped to the registry server IP in the host table so that it can be reached by this client machine. You may have your own DNS service, but in my case, I simply added a record of the IP and its hostname to the <span class="file-path">/etc/hosts</span> file on every client machine.</p>
 <div class="literal-block-wrapper console-output docutils container" id="id14">
 <div class="code-block-caption"><span class="caption-text">/etc/hosts</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
 <div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="go">127.0.0.1 localhost</span>
@@ -711,7 +711,7 @@ sudo<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"
 <section id="for-docker">
 <h3>For Docker…<a class="headerlink" href="#for-docker" title="Link to this heading">#</a></h3>
 <p>This section is for configuration in an environment with Docker installed.</p>
-<p>Simply transfer a copy of the self-signed certificate in my case it was located at <span class="file-path">/etc/docker-registry/certs/private-registry.crt</span> to the client machine. Next, we will need to create a directory under <span class="file-path">/etc/docker/certs.d</span> using the same name as the registry’s hostname and port number as required by Docker. <span class="file-path">/etc/docker/certs.d</span> is the certificate root directory where Docker looks for trusted certificates when connecting to a registry. The full directory path is <span class="file-path">/etc/docker/certs.d/registry-server</span> and we will place the certificate here.</p>
+<p>Simply transfer a copy of the self-signed certificate from the serving machine with Docker registry set up. In my case it was located at <span class="file-path">/etc/docker-registry/certs/private-registry.crt</span> of <cite>registry-server</cite>. Next, we will need to create a directory under <span class="file-path">/etc/docker/certs.d</span> using the same name as the registry’s hostname and port number as required by Docker. <span class="file-path">/etc/docker/certs.d</span> is the certificate root directory where Docker looks for trusted certificates when connecting to a registry. The full directory path for my case is <span class="file-path">/etc/docker/certs.d/registry-server:5000</span> and we will place the certificate here.</p>
 <div class="literal-block-wrapper docutils container" id="id15">
 <div class="code-block-caption"><span class="caption-text">Command: moving the certificate to the client machine (Docker)</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/docker/certs.d/registry-server:5000
@@ -719,7 +719,7 @@ sudo<span class="w"> </span>cp<span class="w"> </span>-rf<span class="w"> </span
 </pre></div>
 </div>
 </div>
-<p>Missing this step or equivalent is why most people are getting the error message <cite>x509: certificate signed by unknown authority</cite> when we try to pull an image from the private registry.</p>
+<p>Missing this step or misconfiguration is why most people are getting the error message <cite>x509: certificate signed by unknown authority</cite> when we try to pull an image from the private registry.</p>
 <p>Alternatively, but not officially recommended, Docker also allows you to bypass the certificate verification step by adding the insecure-registries entry. You do not need to perform this step if you already have the certificate in place.</p>
 <div class="literal-block-wrapper docutils container" id="id16">
 <div class="code-block-caption"><span class="caption-text">Command: setting insecure registry in Docker</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
@@ -753,12 +753,12 @@ sudo<span class="w"> </span>docker<span class="w"> </span>login<span class="w"> 
 </pre></div>
 </div>
 </div>
-<p>We should be able to interact with the private registry from our Docker client now.</p>
+<p>We should be able to interact with the private registry from a Docker client now.</p>
 </section>
 <section id="for-kubernetes">
 <h3>For Kubernetes…<a class="headerlink" href="#for-kubernetes" title="Link to this heading">#</a></h3>
 <p>This section is for configuration in an environment with Kubernetes installed.</p>
-<p>Simply transfer a copy of the self-signed certificate in my case it was located at <span class="file-path">/etc/docker-registry/certs/private-registry.crt</span> to the client machine. But this time, we need to place the certificate under <span class="file-path">/usr/local/share/ca-certificates/</span>.</p>
+<p>Simply transfer a copy of the self-signed certificate from the serving machine with Docker registry set up. Like we did in setting up for a Docker environment. But this time for Kubernetes, we need to place the certificate under <span class="file-path">/usr/local/share/ca-certificates/</span>.</p>
 <div class="literal-block-wrapper docutils container" id="id19">
 <div class="code-block-caption"><span class="caption-text">Command: moving the certificate to the client machine (Kubernetes)</span><a class="headerlink" href="#id19" title="Link to this code">#</a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>-rf<span class="w"> </span>private-registry.crt<span class="w"> </span>/usr/local/share/ca-certificates/ca.crt
@@ -772,7 +772,7 @@ openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span cla
 </pre></div>
 </div>
 </div>
-<p>Then you can import the certificate into your OS by running <cite>update-ca-certificates</cite>. We shall check if the certificate is properly installed by running the command <cite>openssl s_client -connect registry-server:5000 -showcerts &lt;/dev/null</cite>. If the certificate is properly installed, you should see the certificate details as shown below. If we see <cite>Verification error: self-signed certificate</cite> instead, that means we did not configure it properly.</p>
+<p>Then you can import the certificate into your OS by running <code class="code highlight bash docutils literal highlight-bash">update-ca-certificates</code>. We shall check if the certificate is properly installed by running the command <code class="code highlight bash docutils literal highlight-bash">openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span>registry-server:5000<span class="w"> </span>-showcerts<span class="w"> </span>&lt;/dev/null</code>. If the certificate is properly installed, you should see the certificate details as shown below. If we see <cite>Verification error: self-signed certificate</cite> instead, that means we did not configure it properly.</p>
 <div class="literal-block-wrapper console-output docutils container" id="id20">
 <div class="code-block-caption"><span class="caption-text">Successfully Added the certificate</span><a class="headerlink" href="#id20" title="Link to this code">#</a></div>
 <div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">user@test-kube-1:~$ </span>openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span>registry-server:5000<span class="w"> </span>-showcerts<span class="w"> </span>&lt;/dev/null
