@@ -1,0 +1,1106 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Deploying a Local Kubernetes Cluster on Ubuntu Servers &#8212; qiuyids.me</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=7b4e0dc9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6b89569b"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'posts/set_up_kubernetes_cluster';</script>
+    <link rel="icon" href="../../_static/y_logo_icononly.png"/>
+    <link rel="author" title="About these documents" href="../../about/" />
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search/"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/yitistica_logo.png" class="logo__image only-dark" alt="qiuyids.me - Home"/>
+    <script>document.write(`<img src="../../_static/yitistica_logo.png" class="logo__image only-light" alt="qiuyids.me - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../custom-post-list/">
+    Posts
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../about/">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/yitistica" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.linkedin.com/in/qiuyids" title="Linkedin" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-linkedin fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Linkedin</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../custom-post-list/">
+    Posts
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../about/">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/yitistica" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.linkedin.com/in/qiuyids" title="Linkedin" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-linkedin fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Linkedin</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+    <div class="sidebar-start-items__item">
+    
+    
+    <h5>
+        
+        <h4 class="meta_section_header">About</h4>
+        <ul class="post_meta_ul">
+            
+            <li>
+                <span>
+                
+                <i class="fa fa-calendar"></i>
+                
+                2024-07-15
+                </span>
+            </li>
+            
+            <li>
+                <span>
+                
+                </span>
+            </li>
+        </ul>
+        
+    </h5>
+</div>
+
+    
+
+<h4 class="meta_section_header"><a href="../../blog/tag/">With Tags</a></h4>
+<ul class="tags_ul">
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/kubernetes/"><span class="sd-badge">Kubernetes</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/homelab/"><span class="sd-badge">homelab</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/set-up-guide/"><span class="sd-badge">set-up-guide</span></a></li>
+    
+    
+</ul>
+
+    
+
+
+<div>
+<h4 class="meta_section_header">
+  <a href="../../blog/category/">On the Same Topic</a>
+</h4>
+<ul class="category_ul">
+  
+  
+  <li class="category_li">
+    <a href="../../blog/category/devops/"><span>devops (2)</span></a>
+  </li>
+  
+  
+  
+  
+</ul>
+</div>
+
+    <div>
+<h4 class="meta_section_header">
+  
+  
+  <a href="../../blog/">Recently Written</a>
+  
+  
+  
+  <a href="../../blog/">Recently Written</a>
+  
+  
+</h4>
+<ul class="category_ul">
+  
+  <li class="category_li">
+    <a href="../set_up_docker_image_registry_for_kubernetes/">
+      <span>Setting Up a Private Docker Registry</span>
+    </a>
+     <span> - 2024-07-12</span>
+  </li>
+  
+  <li class="category_li">
+    <a href="../epyc_homelab_build/">
+      <span>My Journey of Building and Virtualizing an EPYC Server</span>
+    </a>
+     <span> - 2024-07-01</span>
+  </li>
+  
+</ul>
+</div>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Deploying a...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+<section id="deploying-a-local-kubernetes-cluster-on-ubuntu-servers">
+<h1>Deploying a Local Kubernetes Cluster on Ubuntu Servers<a class="headerlink" href="#deploying-a-local-kubernetes-cluster-on-ubuntu-servers" title="Link to this heading">#</a></h1>
+<p>When I set up my local Kubernetes for the first time, I had to go through a lot of trial and error to get it right. There were some blog posts on setting up Kubernetes, but they were either outdated or lacked the explanation I needed. As I went through the tedious process of learning everything, I wrote down steps in my personal notebook. I figured I might as well reorganize these notes and share them with you. This is a summary of how to deploy a Kubernetes cluster locally.</p>
+<p>I will be demonstrating the setup with two virtual machines running Ubuntu 24.04 server. The first virtual machine will be the control plane node, and the second will be the worker node. I will be installing Kubernetes v1.30. For the container runtime, I will be installing Containerd 1.7.12. For the CNI plugin, I will use Flannel. Ensure you also have an adequate amount of RAM and CPU cores to run the cluster.</p>
+<section id="preparing-host-machines">
+<h2>Preparing Host Machines<a class="headerlink" href="#preparing-host-machines" title="Link to this heading">#</a></h2>
+<p>You may find installation guides on the internet including the official ones inconsistent with each other when it comes to configuring the host machines. Some settings are mandatory on one type of setup, but not on another. It stems from the fact that different components of Kubernetes require different dependent modules for different settings. Even if some modules are not needed, depending on the version of Kubernetes you are installing, they might be required in <a class="reference external" href="https://github.com/kubernetes/kubernetes/pull/123464">Kubernetes preflight checks</a> that would raise an error if the modules are not detected. I think it is important to stay informed about the changes in the evolving Kubernetes ecosystem. The following are the most crucial settings that I have found working for setting up a current or recent versions of Kubernetes. Unless you’re certain that you need to deviate from these steps, you may configure the following manually.</p>
+<section id="update-packages">
+<h3>0. Update Packages<a class="headerlink" href="#update-packages" title="Link to this heading">#</a></h3>
+<p>Up and foremost, you may want to update the package index and upgrade the install packages to the latest versions.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Command: update apt</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>dist-upgrade
+</pre></div>
+</div>
+</div>
+</section>
+<section id="disable-memory-swap">
+<h3>1. Disable Memory Swap<a class="headerlink" href="#disable-memory-swap" title="Link to this heading">#</a></h3>
+<p>Memory swap allows your system to use disk space as an extension of physical RAM by moving less frequently accessed memory pages to disk. According to the <a class="reference external" href="https://kubernetes.io/blog/2023/08/24/swap-linux-beta/">official documentation</a> and a <a class="reference external" href="https://github.com/kubernetes/enhancements/tree/master/keps/sig-node/2400-node-swap">dev note</a> of swap support, Kubernetes did not provide support for swap memory on Linux systems until version 1.22 alpha. This was due to the inherent difficulty in guaranteeing and accounting for pod memory utilization when swap memory was involved. For now unless you have a compelling reason to not do so, I recommend you should follow what most do, and disable swap memory on all Kubernetes nodes’ hosts systems.</p>
+<p>You can disable swap by running the following command.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Command: disable swap and remove swap entry from /etc/fstab</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>swapoff<span class="w"> </span>-a
+
+sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;/\sswap\s/s/^/#/&#39;</span><span class="w"> </span>/etc/fstab
+</pre></div>
+</div>
+</div>
+<p>The first command disables all swap spaces currently in use. The second command comments out any swap entries in the /etc/fstab file, which prevents swap spaces from being automatically mounted at boot. After running the above commands, you can execute <code class="code highlight bash docutils literal highlight-bash">cat<span class="w"> </span>/proc/swaps</code> to verify that there is no active swap.</p>
+</section>
+<section id="configuring-hosts-for-cluster-networking">
+<h3>2. Configuring Hosts for Cluster Networking<a class="headerlink" href="#configuring-hosts-for-cluster-networking" title="Link to this heading">#</a></h3>
+<p>To facilitate networking within your Kubernetes cluster, you need to configure certain settings on your host machines. Kubernetes delegates network management to CNI (Container Network Interface) plugins, so we must ensure that all nodes in the cluster are properly configured to allow the chosen CNI plugin to manage networking. These configurations may vary depending on your choice of CNI plugin. In this case, I’ll be using Flannel.</p>
+<p>First, we need to manually preload a kernel module called <cite>br_netfilter</cite> on all nodes. <cite>br_netfilter</cite> module manages VxLAN traffic, which is important for inter-pod communication across nodes in the same cluster.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Command: enable br_netfilter loading at boot time and load br_netfilter</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;br_netfilter&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/modules-load.d/k8s.conf
+
+sudo<span class="w"> </span>modprobe<span class="w"> </span>br_netfilter
+
+<span class="c1"># check if br_netfilter module is loaded</span>
+lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>br_netfilter
+</pre></div>
+</div>
+</div>
+<p>The <span class="file-path">/etc/modules-load.d/</span> directory is used by <cite>systemd</cite> to load kernel modules at boot time. You may verify that the module is loaded by running <code class="code highlight bash docutils literal highlight-bash">lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>br_netfilter</code>.</p>
+<p>Second, you need to enable IP forwarding by setting <code class="code highlight bash docutils literal highlight-bash">net.ipv4.ip_forward<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span></code>, and enable packets passing to <cite>iptables</cite> for various networking functions.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Command: configure IP forwarding and enable iptables</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf</span>
+<span class="s">net.bridge.bridge-nf-call-iptables  = 1</span>
+<span class="s">net.bridge.bridge-nf-call-ip6tables = 1</span>
+<span class="s">net.ipv4.ip_forward                 = 1</span>
+<span class="s">EOF</span>
+
+sudo<span class="w"> </span>sysctl<span class="w"> </span>--system
+
+<span class="c1"># verify the settings:</span>
+sysctl<span class="w"> </span>net.bridge.bridge-nf-call-iptables<span class="w"> </span>net.bridge.bridge-nf-call-ip6tables<span class="w"> </span>net.ipv4.ip_forward
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="installing-a-container-runtime">
+<h2>Installing a Container Runtime<a class="headerlink" href="#installing-a-container-runtime" title="Link to this heading">#</a></h2>
+<p>Container runtime is a crucial part of Kubernetes, it takes care of lower level container operations such as creating or stopping containers; whereas Kubernetes is a higher level orchestration system that gives the container runtime instructions. Because there is a standardized interface between them, Kubernetes can work with any container runtime that implements the interface. Popular container runtimes supported by Kubernetes include Containerd, Docker Engine, and CRI-O. You need to install a container runtime on each node within the cluster, I will be using <strong>Containerd</strong>.</p>
+<section id="loading-dependent-modules-for-container-runtime">
+<h3>1. Loading Dependent Modules for Container Runtime<a class="headerlink" href="#loading-dependent-modules-for-container-runtime" title="Link to this heading">#</a></h3>
+<p>The container runtime you choose may require some kernel modules to be loaded, although it is possible that container runtime may load it automatically. One module Containerd uses is <strong>overlay</strong>. The <strong>overlay</strong> kernel module is a filesystem feature that enables the creation of layered filesystems, which facilitates storage management in container environments. You can manually load the <strong>overlay</strong> module by running the following commands.</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Command: enable overlay loading at boot time load overlay module</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;overlay&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/modules-load.d/k8s.conf
+
+sudo<span class="w"> </span>modprobe<span class="w"> </span>overlay
+
+<span class="c1"># check if overlay module is loaded</span>
+lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>overlay
+</pre></div>
+</div>
+</div>
+<p>This block appends a line <cite>overlay</cite> to the file <span class="file-path">/etc/modules-load.d/k8s.conf</span>, which tells the system to load the <strong>overlay</strong> module at boot time, and load <strong>overlay</strong> immediately.</p>
+</section>
+<section id="installing-containerd">
+<h3>2. Installing Containerd<a class="headerlink" href="#installing-containerd" title="Link to this heading">#</a></h3>
+<p>Installing Containerd is straightforward. You can install it from the official repository by running the following command.</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Command: install Containerd</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>containerd
+</pre></div>
+</div>
+</div>
+<p>By executing <code class="code highlight bash docutils literal highlight-bash">systemctl<span class="w"> </span>status<span class="w"> </span>containerd</code>, you can verify that the service is running. The output should look like the following.</p>
+<div class="no-copybutton console-output highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="go">No VM guests are running outdated hypervisor (qemu) binaries on this host.</span>
+<span class="linenos"> 2</span><span class="go">● containerd.service - containerd container runtime</span>
+<span class="linenos"> 3</span><span class="go">     Loaded: loaded (/usr/lib/systemd/system/containerd.service; enabled; preset: enabled)</span>
+<span class="linenos"> 4</span><span class="go">     Active: active (running) since Fri 2024-07-19 07:31:40 UTC; 4s ago</span>
+<span class="linenos"> 5</span><span class="go">       Docs: https://containerd.io</span>
+<span class="linenos"> 6</span><span class="go">    Process: 5649 ExecStartPre=/sbin/modprobe overlay (code=exited, status=0/SUCCESS)</span>
+<span class="linenos"> 7</span><span class="go">   Main PID: 5658 (containerd)</span>
+<span class="linenos"> 8</span><span class="go">      Tasks: 18</span>
+<span class="linenos"> 9</span><span class="go">     Memory: 14.8M (peak: 16.9M)</span>
+<span class="linenos">10</span><span class="go">        CPU: 133ms</span>
+<span class="linenos">11</span><span class="go">     CGroup: /system.slice/containerd.service</span>
+<span class="linenos">12</span><span class="go">             └─5658 /usr/bin/containerd</span>
+</pre></div>
+</div>
+<p>As one may see at Process attribute, Containerd actually helped loading <strong>overlay</strong> before starting it main service.</p>
+</section>
+<section id="configuring-the-systemd-cgroup-driver">
+<h3>3. Configuring the Systemd Cgroup Driver<a class="headerlink" href="#configuring-the-systemd-cgroup-driver" title="Link to this heading">#</a></h3>
+<p>Both the kubelet and the container runtime utilizes cgroups to manage resources for pods and containers, e.g., setting CPU limits for workloads. Both the kubelet and container runtime must use the same cgroup driver. According to the <a class="reference external" href="https://v1-29.docs.kubernetes.io/docs/setup/production-environment/container-runtimes/#cgroupfs-cgroup-driver">official documentation</a>, if your system has <strong>systemd</strong> as init system and employs <strong>cgroup v2</strong>, you should use the <strong>systemd</strong> cgroup driver instead of <strong>cgroupfs</strong>. If you create a cluster with kubeadm, the kubelet will use the <strong>systemd</strong> cgroup driver by default. That means, you need to configure the container runtime, in my case Containerd, to use the <strong>systemd</strong> cgroup driver as well.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Command: configure Containerd to use systemd cgroup driver</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>/etc/containerd
+<span class="c1"># init a custom config file with default settings:</span>
+containerd<span class="w"> </span>config<span class="w"> </span>default<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/containerd/config.toml
+
+<span class="c1"># modify the values in the configuration file:</span>
+sudo<span class="w"> </span>nano<span class="w"> </span>/etc/containerd/config.toml
+<span class="c1"># set the value of SystemdCgroup to true:</span>
+<span class="w">  </span><span class="o">[</span>plugins.<span class="s2">&quot;io.containerd.grpc.v1.cri&quot;</span>.containerd.runtimes<span class="o">]</span>
+
+<span class="w">    </span><span class="o">[</span>plugins.<span class="s2">&quot;io.containerd.grpc.v1.cri&quot;</span>.containerd.runtimes.runc<span class="o">]</span>
+<span class="w">      </span>...
+<span class="w">      </span><span class="o">[</span>plugins.<span class="s2">&quot;io.containerd.grpc.v1.cri&quot;</span>.containerd.runtimes.runc.options<span class="o">]</span>
+<span class="w">        </span>...
+<span class="hll"><span class="w">        </span><span class="nv">SystemdCgroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="w">  </span><span class="c1"># set to true</span>
+</span>
+<span class="c1"># restart</span>
+sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>containerd
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>containerd
+</pre></div>
+</div>
+</div>
+<p>The commands above initialize a configuration file with default settings and then modify it to enable <cite>SystemdCgroup</cite>. The default file path of custom Containerd configuration file is <span class="file-path">/etc/containerd/config.toml</span>. You should restart Containerd after making the change.</p>
+</section>
+<section id="replacing-sandbox-image">
+<h3>4*. Replacing Sandbox Image<a class="headerlink" href="#replacing-sandbox-image" title="Link to this heading">#</a></h3>
+<p>Due to my restricted internet, which prevents me from reaching <cite>registry.k8s.io</cite>, I can’t start my cluster with the default sandbox image when running <code class="code highlight bash docutils literal highlight-bash">kubeadm<span class="w"> </span>init</code>. As a result, I need to replace the default sandbox image URL in the Containerd configuration file. I’m changing it from <cite>registry.k8s.io/pause:3.8</cite> to an alternative source for the sandbox_image flag - in my case, a mirrored image on aliyuncs. You may skip this step if you don’t have similar restrictions.</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">/etc/containerd/config.toml sanbox_image</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># modify the following:</span>
+<span class="p p-Indicator">[</span><span class="nv">plugins.&quot;io.containerd.grpc.v1.cri&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">sandbox_image = &quot;registry.k8s.io/pause:3.2&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>Alternatively, you can use the following command to replace the default sandbox image URL in configuration file.</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Command: replace sandbox image URL</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/registry.k8s.io/registry.aliyuncs.com\/google_containers/&#39;</span><span class="w"> </span>/etc/containerd/config.toml
+
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>containerd
+</pre></div>
+</div>
+</div>
+<p>You should restart Containerd for the change to take effect.</p>
+</section>
+</section>
+<section id="installing-kubernetes-packages">
+<h2>Installing Kubernetes Packages<a class="headerlink" href="#installing-kubernetes-packages" title="Link to this heading">#</a></h2>
+<p>Now, we can install the Kubernetes packages.</p>
+<section id="downloading-the-kubernetes-gpg-key">
+<h3>1. Downloading the Kubernetes GPG Key<a class="headerlink" href="#downloading-the-kubernetes-gpg-key" title="Link to this heading">#</a></h3>
+<p>The package manager will use this GPG key to verify the public signature on Kubernetes packages for the installation. We should download the GPG key and place it in the <span class="file-path">/etc/apt/keyrings</span> directory.</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Command: download the Kubernetes GPG key</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>gpg<span class="w"> </span>--dearmor<span class="w"> </span>-o<span class="w"> </span>/etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>/etc/apt/keyrings/kubernetes-apt-keyring.gpg
+</pre></div>
+</div>
+</div>
+</section>
+<section id="adding-a-kubernetes-apt-repository">
+<h3>2. Adding a Kubernetes Apt Repository<a class="headerlink" href="#adding-a-kubernetes-apt-repository" title="Link to this heading">#</a></h3>
+<p>The following adds the official Kubernetes repository to your system’s package sources. Ensure you set <code class="code highlight bash docutils literal highlight-bash">signed-by</code> flag to the path of the key we downloaded in the previous step.</p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Command: add Kubernetes apt repository</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/apt/sources.list.d/kubernetes.list
+
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>/etc/apt/sources.list.d/kubernetes.list
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper console-output docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">/etc/apt/sources.list.d/kubernetes.list</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="go">deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="install-kubectl-kubelet-and-kubeadm">
+<h3>3. Install kubectl, kubelet, and kubeadm<a class="headerlink" href="#install-kubectl-kubelet-and-kubeadm" title="Link to this heading">#</a></h3>
+<p>Install the necessary components of Kubernetes, which are <cite>kubectl</cite>, <cite>kubelet</cite>, and <cite>kubeadm</cite>.</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Command: install Kubernetes packages</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>kubelet<span class="w"> </span>kubeadm<span class="w"> </span>kubectl
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="setting-up-controller-nodes">
+<h2>Setting Up Controller Nodes<a class="headerlink" href="#setting-up-controller-nodes" title="Link to this heading">#</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Everything up to this section should be installed and configured in all nodes. Setups in this section are <strong>only applied to controller nodes</strong>. You should not run these commands on worker nodes.</p>
+</div>
+<p>Now we will start setting up the controller node, which is the first node in the cluster. This type of nodes are responsible for managing the entire cluster by hosting the control plane components. Instructions are sent from controller nodes to worker nodes, in turn, worker nodes execute the application workloads.</p>
+<p>We will be setting up 1 controller node.</p>
+<section id="initializing-the-kubernetes-control-plane">
+<h3>1. Initializing the Kubernetes Control Plane<a class="headerlink" href="#initializing-the-kubernetes-control-plane" title="Link to this heading">#</a></h3>
+<p>The command <code class="code highlight bash docutils literal highlight-bash">sudo<span class="w"> </span>kubeadm<span class="w"> </span>init</code> initializes a Kubernetes control plane node, which will establish the necessary system components.</p>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">Command: initialize the control plane node</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>kubeadm<span class="w"> </span>init<span class="w"> </span>--control-plane-endpoint<span class="o">=</span><span class="m">192</span>.168.1.179<span class="w"> </span>--node-name<span class="o">=</span>kube-controller<span class="w"> </span>--pod-network-cidr<span class="o">=</span><span class="m">10</span>.244.0.0/16<span class="w"> </span>--image-repository<span class="o">=</span><span class="s1">&#39;registry.cn-hangzhou.aliyuncs.com/google_containers&#39;</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p><code class="code highlight bash docutils literal highlight-bash">--control-plane-endpoint</code>: Set this to the IP address of the control plane node.</p></li>
+<li><p><code class="code highlight bash docutils literal highlight-bash">--node-name</code>: Set this to the name or hostname of the node.</p></li>
+<li><p><code class="code highlight bash docutils literal highlight-bash">--pod-network-cidr</code>: Use this to set the CIDR range for the pod network. If you’re using Flannel for cluster networking, use 10.244.0.0/16.</p></li>
+<li><p><code class="code highlight bash docutils literal highlight-bash">--image-repository</code>: Use this flag to pull component images from a different registry if you have access restrictions to the default Kubernetes registry.</p></li>
+</ul>
+<p>Now we enable the kubelet service.</p>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Command: enable kubelet service</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>kubelet
+</pre></div>
+</div>
+</div>
+<p>The following commands allow us to manage the Kubernetes cluster as a regular user.</p>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-text">Command: copy kubeconfig to user’s home directory</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/.kube
+<span class="w">  </span>sudo<span class="w"> </span>cp<span class="w"> </span>-i<span class="w"> </span>/etc/kubernetes/admin.conf<span class="w"> </span><span class="nv">$HOME</span>/.kube/config
+<span class="w">  </span>sudo<span class="w"> </span>chown<span class="w"> </span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>:<span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="w"> </span><span class="nv">$HOME</span>/.kube/config
+</pre></div>
+</div>
+</div>
+<p>The second line copies an initialized config file that contains the necessary credentials and cluster information to access the Kubernetes API server. The third line ensures that the current user can read and modify the config file without needing sudo privileges.</p>
+</section>
+<section id="a-installing-a-cni-plugin">
+<h3>2.a Installing a CNI Plugin<a class="headerlink" href="#a-installing-a-cni-plugin" title="Link to this heading">#</a></h3>
+<p>Kubernetes requires a network plugin to enable communication between pods across different nodes. We will be using Flannel, which is a popular choice for Kubernetes networking. To install Flannel in Kubernetes, you simply need to apply the Flannel configuration file.</p>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-text">Command: apply Flannel configuration directly</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+</pre></div>
+</div>
+</div>
+<p>After applying the configuration, we can check if the system pods are running properly. Ensure the two <strong>coredns</strong> pods are not in a pending state. If they are, you may need to check the logs of these pods to identify any issues. If you encounter problems similar to what I experienced, refer to the next subsection for troubleshooting steps.</p>
+<div class="literal-block-wrapper console-output docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-text">kubectl get pods -n kube-system (healthy)</span><a class="headerlink" href="#id18" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">user@test-kube-master:~$ </span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>kube-system
+<span class="linenos">2</span><span class="go">NAME                                      READY   STATUS    RESTARTS   AGE</span>
+<span class="linenos">3</span><span class="go">coredns-7c445c467-9cxtt                   1/1     Running   0          15h</span>
+<span class="linenos">4</span><span class="go">coredns-7c445c467-tkxk6                   1/1     Running   0          15h</span>
+<span class="linenos">5</span><span class="go">etcd-kube-controller                      1/1     Running   0          15h</span>
+<span class="linenos">6</span><span class="go">kube-apiserver-kube-controller            1/1     Running   0          15h</span>
+<span class="linenos">7</span><span class="go">kube-controller-manager-kube-controller   1/1     Running   0          15h</span>
+<span class="linenos">8</span><span class="go">kube-proxy-wr8p2                          1/1     Running   0          15h</span>
+<span class="linenos">9</span><span class="go">kube-scheduler-kube-controller            1/1     Running   0          15h</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="b-configuring-kubernetes-to-pull-flannel-from-a-private-registry">
+<h3>2.b Configuring Kubernetes to Pull Flannel from a Private Registry<a class="headerlink" href="#b-configuring-kubernetes-to-pull-flannel-from-a-private-registry" title="Link to this heading">#</a></h3>
+<p>Again, the above should do fine for most of us. However, if you’re in a situation similar to mine, where server nodes cannot access <cite>docker.io</cite>, you may need to pull the Flannel images from a mirror registry or a private registry hosted in a node with VPN access that can pull images freely. I’ll be demonstrating the latter approach. I also think the inclusion of this subsection is helpful because being unable to pull from a private image registry straight away is a common problem that many people face when setting up a Kubernetes cluster.</p>
+<div class="literal-block-wrapper console-output docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-text">kubectl describe pod kube-flannel-ds-4cv7k -n kube-flannel (what the error looks like)</span><a class="headerlink" href="#id19" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="go">Events:</span>
+<span class="linenos"> 2</span><span class="go">  Type     Reason     Age                 From               Message</span>
+<span class="linenos"> 3</span><span class="go">  ----     ------     ----                ----               -------</span>
+<span class="linenos"> 4</span><span class="go">  Normal   Scheduled  2m10s               default-scheduler  Successfully assigned kube-flannel/kube-flannel-ds-4cv7k to kube-controller</span>
+<span class="linenos"> 5</span><span class="go">  Warning  Failed     92s                 kubelet            Failed to pull image &quot;docker.io/flannel/flannel-cni-plugin:v1.5.1-flannel1&quot;: rpc error: code = DeadlineExceeded desc = failed to pull and unpack image &quot;docker.io/flannel/flannel-cni-plugin:v1.5.1-flannel1&quot;: failed to copy: httpReadSeeker: failed open: failed to do request: Get &quot;https://production.cloudflare.docker.com/registry-v2/docker/registry/v2/blobs/sha256/0b/0b2af0d159717fee418c744b3ec2d6ad0478aa9180987a06a790aca4adbe3b56/data?verify=1721409422-hLd%!F(MISSING)trChaBB5UnqjMq67%!B(MISSING)tNVVTs%!D(MISSING)&quot;: dial tcp 103.200.31.172:443: i/o timeout</span>
+<span class="linenos"> 6</span><span class="go">  Warning  Failed     41s (x2 over 92s)   kubelet            Error: ErrImagePull</span>
+<span class="linenos"> 7</span><span class="go">  Warning  Failed     41s                 kubelet            Failed to pull image &quot;docker.io/flannel/flannel-cni-plugin:v1.5.1-flannel1&quot;: rpc error: code = DeadlineExceeded desc = failed to pull and unpack image &quot;docker.io/flannel/flannel-cni-plugin:v1.5.1-flannel1&quot;: failed to copy: httpReadSeeker: failed open: failed to do request: Get &quot;https://production.cloudflare.docker.com/registry-v2/docker/registry/v2/blobs/sha256/0b/0b2af0d159717fee418c744b3ec2d6ad0478aa9180987a06a790aca4adbe3b56/data?verify=1721409472-8RcRSX%!B(MISSING)miU91pM5g1odJQzJPiZE%!D(MISSING)&quot;: dial tcp 103.200.31.172:443: i/o timeout</span>
+<span class="linenos"> 8</span><span class="go">  Normal   BackOff    26s (x2 over 91s)   kubelet            Back-off pulling image &quot;docker.io/flannel/flannel-cni-plugin:v1.5.1-flannel1&quot;</span>
+<span class="linenos"> 9</span><span class="go">  Warning  Failed     26s (x2 over 91s)   kubelet            Error: ImagePullBackOff</span>
+<span class="linenos">10</span><span class="go">  Normal   Pulling    11s (x3 over 2m9s)  kubelet            Pulling image &quot;docker.io/flannel/flannel-cni-plugin:v1.5.1-flannel1&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>Check out my other <a class="reference internal" href="../set_up_docker_image_registry_for_kubernetes/"><span class="doc">post</span></a> on setting up a private Docker registry. I’ll assume you already have a private Docker registry, and your Kubernetes cluster is able to reach the hosting server. Ensure you’ve imported the self-signed certificate, allowing you to successfully pull images from the private Docker registry. You can verify it by running <code class="code highlight bash docutils literal highlight-bash">openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span>registry-server:5000<span class="w"> </span>-showcerts<span class="w"> </span>&lt;/dev/null</code>.</p>
+<p>To proceed, log on any machine in the same network with free access to the public registry and pull the Flannel images from the public registry. Next, you need to tag and push the Flannel images to your private registry. You can accomplish these by running the following commands.</p>
+<div class="literal-block-wrapper docutils container" id="id20">
+<div class="code-block-caption"><span class="caption-text">Command: tagging and pushing Flannel images</span><a class="headerlink" href="#id20" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># pull the Flannel images from the public registry:</span>
+sudo<span class="w"> </span>docker<span class="w"> </span>pull<span class="w"> </span>flannel/flannel:v0.25.4
+sudo<span class="w"> </span>docker<span class="w"> </span>pull<span class="w"> </span>flannel/flannel-cni-plugin:v1.4.1-flannel1
+
+<span class="c1"># tag the pulled images and include the private registry address:</span>
+sudo<span class="w"> </span>docker<span class="w"> </span>image<span class="w"> </span>tag<span class="w"> </span>flannel/flannel:v0.25.4<span class="w"> </span>registry-server:5000/flannel/flannel:v0.25.4
+sudo<span class="w"> </span>docker<span class="w"> </span>image<span class="w"> </span>tag<span class="w"> </span>flannel/flannel-cni-plugin:v1.4.1-flannel1<span class="w">  </span>registry-server:5000/flannel/flannel-cni-plugin:v1.4.1-flannel1
+
+<span class="c1"># push the tagged images to the private registry:</span>
+image<span class="w"> </span>push<span class="w"> </span>registry-server:5000/flannel/flannel:v0.25.4
+image<span class="w"> </span>push<span class="w"> </span>registry-server:5000/flannel/flannel-cni-plugin:v1.4.1-flannel1
+</pre></div>
+</div>
+</div>
+<p>After pushing the Flannel images to your private registry, we need to download the default <a class="reference external" href="https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml">Flannel configuration file</a>, and Modify the configuration file to use the private registry for pulling the Flannel images:</p>
+<p><strong>a. Cut the namespace creation part from the configuration file and save it in a separate file:</strong></p>
+<div class="literal-block-wrapper docutils container" id="id21">
+<div class="code-block-caption"><span class="caption-text">kube-flannel-namespace.yaml</span><a class="headerlink" href="#id21" title="Link to this code">#</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Namespace</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k8s-app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flannel</span>
+<span class="w">    </span><span class="nt">pod-security.kubernetes.io/enforce</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">privileged</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube-flannel</span>
+</pre></div>
+</div>
+</div>
+<p><strong>b. Create the name space and create a Kubernetes secret in the flannel namespace for accessing the private registry:</strong></p>
+<div class="literal-block-wrapper docutils container" id="id22">
+<div class="code-block-caption"><span class="caption-text">Command: create a namespace and secret for Flannel</span><a class="headerlink" href="#id22" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a namespace for flannel:</span>
+sudo<span class="w"> </span>nano<span class="w"> </span>kube-flannel-namespace.yaml
+<span class="c1"># copy everything from above into the editor and save it.</span>
+
+<span class="c1"># create a namespace for flannel:</span>
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>kube-flannel-namespace.yaml
+
+<span class="c1"># create a Kubernetes Secret for accessing private registry:</span>
+kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>docker-registry<span class="w"> </span>&lt;secret-name&gt;<span class="w"> </span><span class="se">\</span>
+--docker-server<span class="o">=</span>&lt;your-registry-server&gt;<span class="w"> </span><span class="se">\</span>
+--docker-username<span class="o">=</span>&lt;username<span class="w"> </span>to<span class="w"> </span>log<span class="w"> </span>into<span class="w"> </span>the<span class="w"> </span>docker<span class="w"> </span>registry&gt;<span class="w"> </span><span class="se">\</span>
+--docker-password<span class="o">=</span>&lt;password<span class="w"> </span>to<span class="w"> </span>log<span class="w"> </span>into<span class="w"> </span>the<span class="w"> </span>docker<span class="w"> </span>registry&gt;
+
+<span class="c1"># see the secret:</span>
+kubectl<span class="w"> </span>-n<span class="w"> </span>kube-flannel<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>private-docker-registry<span class="w"> </span>--output<span class="o">=</span>yaml
+</pre></div>
+</div>
+</div>
+<p><strong>c. Modify the image field to pull from the private registry, and include secret of our private registry log in information:</strong></p>
+<div class="literal-block-wrapper docutils container" id="id23">
+<div class="code-block-caption"><span class="caption-text">modified-kube-flannel.yaml (partial)</span><a class="headerlink" href="#id23" title="Link to this code">#</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DaemonSet</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">template</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">spec</span><span class="p p-Indicator">:</span>
+<span class="w">      </span><span class="nt">containers</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube-flannel</span>
+<span class="hll"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">registry-server:5000/flannel/flannel:v0.25.4</span>
+</span><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">      </span><span class="nt">initContainers</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">install-cni-plugin</span>
+<span class="hll"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">registry-server:5000/flannel/flannel-cni-plugin:v1.4.1-flannel1</span>
+</span><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">install-cni</span>
+<span class="hll"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">registry-server:5000/flannel/flannel:v0.25.4</span>
+</span><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">      </span><span class="nt">imagePullSecrets</span><span class="p">:</span>
+<span class="hll"><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">private-docker-registry</span>
+</span><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</div>
+<p>You can now initiate Flannel with the following command now.</p>
+<div class="literal-block-wrapper docutils container" id="id24">
+<div class="code-block-caption"><span class="caption-text">Command: apply modified Flannel configuration</span><a class="headerlink" href="#id24" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>modified-kube-flannel.yaml
+</pre></div>
+</div>
+</div>
+<p>Afterwards, check if the system pods (especially the coredns pods) are running properly with <code class="code highlight bash docutils literal highlight-bash">kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>kube-system</code>.</p>
+</section>
+</section>
+<section id="setting-up-a-kubernetes-cluster-on-worker-nodes">
+<h2>Setting Up a Kubernetes Cluster On Worker Nodes<a class="headerlink" href="#setting-up-a-kubernetes-cluster-on-worker-nodes" title="Link to this heading">#</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Setups in this section are only applied to worker nodes. Make sure you have completed the universal setups (<a class="reference internal" href="#preparing-host-machines">Preparing Host Machines</a>, <a class="reference internal" href="#installing-a-container-runtime">Installing a Container Runtime</a> &amp; <a class="reference internal" href="#installing-kubernetes-packages">Installing Kubernetes Packages</a>).</p>
+</div>
+<p>Assuming that you have all previous steps correctly, you should now be able to join the worker nodes to the cluster. If you are using a private image registry, ensure the related setups are also completed on the worker nodes as well.</p>
+<p>Now <strong>on your controller node</strong>, run the following command.</p>
+<div class="literal-block-wrapper docutils container" id="id25">
+<div class="code-block-caption"><span class="caption-text">Command: create new join command for worker nodes (on controller node)</span><a class="headerlink" href="#id25" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>kubeadm<span class="w"> </span>token<span class="w"> </span>create<span class="w"> </span>--print-join-command
+</pre></div>
+</div>
+</div>
+<p>This command generates a new token and provides the complete join command that can be used to add new worker nodes to the existing cluster.</p>
+<p>Copy the output command and run it with sudo on each worker node. The command will look similar to this:</p>
+<div class="literal-block-wrapper docutils container" id="id26">
+<div class="code-block-caption"><span class="caption-text">Command: join worker nodes to the cluster (on worker node)</span><a class="headerlink" href="#id26" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>kubeadm<span class="w"> </span>join<span class="w"> </span><span class="m">192</span>.168.1.179:6443<span class="w"> </span>--token<span class="w"> </span>djbije.06tw1yghp5sqpcml<span class="w"> </span>--discovery-token-ca-cert-hash<span class="w"> </span>sha256:ed972e37c2dfec7b3a0daefd04948622bc5829deeb6e9d4cf7fe2c28c277008b
+</pre></div>
+</div>
+</div>
+<p>You should get a message in the terminal that says this node has joined the cluster. To add more worker nodes, simply repeat these steps on each new worker node.</p>
+</section>
+<section id="final-status-check">
+<h2>Final Status Check<a class="headerlink" href="#final-status-check" title="Link to this heading">#</a></h2>
+<p>Finally, we want to verify that the node has indeed joined the cluster by running <code class="code highlight bash docutils literal highlight-bash">kubectl<span class="w"> </span>get<span class="w"> </span>nodes</code> on the controller node.</p>
+<div class="literal-block-wrapper docutils container" id="id27">
+<div class="code-block-caption"><span class="caption-text">Command: check the status of the nodes</span><a class="headerlink" href="#id27" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+<span class="w">  </span>kubectl<span class="w"> </span>describe<span class="w"> </span>nodes
+</pre></div>
+</div>
+</div>
+<p>If the output shows the nodes are in the Ready state, then it means the node has successfully joined the cluster.</p>
+<div class="literal-block-wrapper console-output docutils container" id="id28">
+<div class="code-block-caption"><span class="caption-text">kubectl get nodes</span><a class="headerlink" href="#id28" title="Link to this code">#</a></div>
+<div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">user@test-kube-master:~$ </span>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+<span class="linenos">2</span><span class="go">NAME                 STATUS   ROLES           AGE   VERSION</span>
+<span class="linenos">3</span><span class="go">kube-controller      Ready    control-plane   18h   v1.30.3</span>
+<span class="linenos">4</span><span class="go">test-kube-worker-1   Ready    &lt;none&gt;          11s   v1.30.3</span>
+</pre></div>
+</div>
+</div>
+<p>That is it, we have built a Kubernetes cluster.</p>
+</section>
+<section id="tearing-down-a-kubernetes-cluster">
+<h2>Tearing Down a Kubernetes Cluster<a class="headerlink" href="#tearing-down-a-kubernetes-cluster" title="Link to this heading">#</a></h2>
+<p>In this section, I will show you how to uninstall components of Kubernetes and remove the cluster. This can also be helpful if you did not install the cluster correctly and want to start over.</p>
+<section id="removing-a-node-from-a-cluster">
+<h3>1. Removing a Node from a Cluster<a class="headerlink" href="#removing-a-node-from-a-cluster" title="Link to this heading">#</a></h3>
+<p>You may want to remove an entire node from the cluster. Run the following on the controller node.</p>
+<div class="literal-block-wrapper docutils container" id="id29">
+<div class="code-block-caption"><span class="caption-text">Command: remove a worker node (controller Node)</span><a class="headerlink" href="#id29" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>drain<span class="w"> </span>test-kube-worker-1<span class="w"> </span>--delete-local-data
+kubectl<span class="w"> </span>delete<span class="w"> </span>node<span class="w"> </span>test-kube-worker-1
+<span class="c1"># kubectl delete node test-kube-worker-1 --force --grace-period=0</span>
+</pre></div>
+</div>
+</div>
+<p>The first command basically evicts all pods from the node and deletes the local data as well. The second command tells Kubernetes to delete and remove the node from the cluster. If you want to force delete the node, you may add flags <code class="code highlight bash docutils literal highlight-bash">--force<span class="w"> </span>--grace-period<span class="o">=</span><span class="m">0</span></code> to the second command.</p>
+<p>Then log into the worker node and run <code class="code highlight bash docutils literal highlight-bash">kubeadm<span class="w"> </span>reset</code>.</p>
+<div class="literal-block-wrapper docutils container" id="id30">
+<div class="code-block-caption"><span class="caption-text">Command: reset a node (worker Node)</span><a class="headerlink" href="#id30" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubeadm<span class="w"> </span>reset
+</pre></div>
+</div>
+</div>
+<p>It will stop the services that <cite>kubeadm</cite> set up, remove all related files, and reset the network configuration.</p>
+</section>
+<section id="resetting-an-entire-cluster">
+<h3>2. Resetting an Entire Cluster<a class="headerlink" href="#resetting-an-entire-cluster" title="Link to this heading">#</a></h3>
+<p>After removing all worker nodes, you may also want to reset the entire cluster for a fresh start. Run the following on the controller node.</p>
+<div class="literal-block-wrapper docutils container" id="id31">
+<div class="code-block-caption"><span class="caption-text">Command: reset the controller node</span><a class="headerlink" href="#id31" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>kubeadm<span class="w"> </span>reset
+sudo<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>/etc/kubernetes<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="nv">$HOME</span>/.kube<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>/etc/cni/net.d/*flannel*
+</pre></div>
+</div>
+</div>
+<p>Just as we did on the worker node, we will also need to remove the left-over files that Kubernetes created, remove the configurations we copied to <span class="file-path">HOME/.kube</span>, and delete the Flannel configuration files. If you are not using Flannel, you may need to remove the CNI plugin directory that you are using. These ensure you don’t have conflicting configurations when you reinstall the cluster.</p>
+<p>If you no longer need Kubernetes, you can also remove the Kubernetes packages from the system.</p>
+<div class="literal-block-wrapper docutils container" id="id32">
+<div class="code-block-caption"><span class="caption-text">Command: remove Kubernetes packages</span><a class="headerlink" href="#id32" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>remove<span class="w"> </span>kubectl<span class="w"> </span>kubeadm<span class="w"> </span>kubelet
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+  
+  
+
+
+<div class="section ablog__prev-next">
+  <span class="ablog__prev">
+    
+    
+    <a href="../set_up_docker_image_registry_for_kubernetes/">
+      
+      <i class="fa fa-arrow-circle-left"></i>
+      
+      <span>Setting Up a Private Docker Registry</span>
+    </a>
+    
+  </span>
+  <span class="ablog__spacer">&nbsp;</span>
+  <span class="ablog__next">
+    
+  </span>
+</div>
+
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-host-machines">Preparing Host Machines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-packages">0. Update Packages</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#disable-memory-swap">1. Disable Memory Swap</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuring-hosts-for-cluster-networking">2. Configuring Hosts for Cluster Networking</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-a-container-runtime">Installing a Container Runtime</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-dependent-modules-for-container-runtime">1. Loading Dependent Modules for Container Runtime</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-containerd">2. Installing Containerd</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuring-the-systemd-cgroup-driver">3. Configuring the Systemd Cgroup Driver</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#replacing-sandbox-image">4*. Replacing Sandbox Image</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-kubernetes-packages">Installing Kubernetes Packages</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#downloading-the-kubernetes-gpg-key">1. Downloading the Kubernetes GPG Key</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-a-kubernetes-apt-repository">2. Adding a Kubernetes Apt Repository</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#install-kubectl-kubelet-and-kubeadm">3. Install kubectl, kubelet, and kubeadm</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-controller-nodes">Setting Up Controller Nodes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initializing-the-kubernetes-control-plane">1. Initializing the Kubernetes Control Plane</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-installing-a-cni-plugin">2.a Installing a CNI Plugin</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#b-configuring-kubernetes-to-pull-flannel-from-a-private-registry">2.b Configuring Kubernetes to Pull Flannel from a Private Registry</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-a-kubernetes-cluster-on-worker-nodes">Setting Up a Kubernetes Cluster On Worker Nodes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-status-check">Final Status Check</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tearing-down-a-kubernetes-cluster">Tearing Down a Kubernetes Cluster</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#removing-a-node-from-a-cluster">1. Removing a Node from a Cluster</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resetting-an-entire-cluster">2. Resetting an Entire Cluster</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Yi Q.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Set Up a Private Docker Registry &#8212; qiuyids.me</title>
+    <title>Setting Up a Private Docker Registry &#8212; qiuyids.me</title>
   
   
   
@@ -355,7 +355,7 @@ document.write(`
                 
                 <i class="fa fa-calendar"></i>
                 
-                2024-07-10
+                2024-07-12
                 </span>
             </li>
             
@@ -407,7 +407,7 @@ document.write(`
   
   
   <li class="category_li">
-    <a href="../../blog/category/devops/"><span>devops (1)</span></a>
+    <a href="../../blog/category/devops/"><span>devops (2)</span></a>
   </li>
   
   
@@ -423,8 +423,19 @@ document.write(`
   <a href="../../blog/">Recently Written</a>
   
   
+  
+  <a href="../../blog/">Recently Written</a>
+  
+  
 </h4>
 <ul class="category_ul">
+  
+  <li class="category_li">
+    <a href="../set_up_kubernetes_cluster/">
+      <span>Deploying a Local Kubernetes Cluster on Ubuntu Servers</span>
+    </a>
+     <span> - 2024-07-15</span>
+  </li>
   
   <li class="category_li">
     <a href="../epyc_homelab_build/">
@@ -470,7 +481,7 @@ document.write(`
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page">Set Up a...</li>
+    <li class="breadcrumb-item active" aria-current="page">Setting Up...</li>
   </ul>
 </nav>
 </div>
@@ -487,8 +498,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-<section id="set-up-a-private-docker-registry">
-<h1>Set Up a Private Docker Registry<a class="headerlink" href="#set-up-a-private-docker-registry" title="Link to this heading">#</a></h1>
+<section id="setting-up-a-private-docker-registry">
+<h1>Setting Up a Private Docker Registry<a class="headerlink" href="#setting-up-a-private-docker-registry" title="Link to this heading">#</a></h1>
 <p>I initially thought setting up a Docker registry for a local cluster would be a one-line command, but experience showed otherwise. I have browsed around and discovered that much of the obstacle many others and I encountered was due to TLS misconfiguration that was a requirement implicitly imposed by Docker and Kubernetes. In this post, I would like to share how to set up a TLS enabled private Docker registry in a local network. As a disclaimer, this is not really the best practice guide for a production environment, the aim of this post is to illustrate a barebones setup so that you can connect your Docker and Kubernetes environment to a private registry successfully.</p>
 <p>For this demonstration, I will be using 2 VMs: 1 hosting server for a Docker registry and 1 machine with Docker and Kubernetes installed that acts as a client machine to the registry. All machines are running on the same local network. The OS of each machine is Ubuntu Server 24.04 LTS. My Docker version is 27.0.3 and 1.46 for API version. My Kubernetes version is 1.30.2 (both client and server). And the registry image I will be using is registry:2.8.3.</p>
 <p>Setting up consists of the following steps:</p>
@@ -559,7 +570,7 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<p>What is commands does it create a configuration file at <span class="file-path">/etc/apt/sources.list.d/docker.list</span> directory and it will overwrite the existing <span class="file-path">docker.list</span> file if it exists. Ensure the signed-by argument is pointing to the right GPG key file we downloaded earlier.</p>
+<p>What is commands does it create a configuration file at <span class="file-path">/etc/apt/sources.list.d/docker.list</span> directory and it will overwrite the existing <span class="file-path">docker.list</span> file if it exists. Ensure the <code class="code highlight bash docutils literal highlight-bash">signed-by</code> flag is pointing to the right GPG key file we downloaded earlier.</p>
 <div class="literal-block-wrapper console-output docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">/etc/apt/sources.list.d/docker.list</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
 <div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="go">deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu       noble stable</span>
@@ -837,7 +848,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 </section>
 <section id="basic-commands-of-using-docker-registry">
 <h2>Basic Commands of Using Docker Registry<a class="headerlink" href="#basic-commands-of-using-docker-registry" title="Link to this heading">#</a></h2>
-<p>Below we tag a Docker image and push it to the private registry.</p>
+<p>Below we tagged a Docker image <cite>hello-world</cite> with <cite>hello-world2:latest</cite> and pushed it to the private registry.</p>
 <div class="literal-block-wrapper console-output docutils container" id="id23">
 <div class="code-block-caption"><span class="caption-text">tagging and pushing an image</span><a class="headerlink" href="#id23" title="Link to this code">#</a></div>
 <div class="no-copybutton highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">user@test-kube-1:~$ </span>sudo<span class="w"> </span>docker<span class="w"> </span>image<span class="w"> </span>ls
@@ -873,6 +884,14 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
   </span>
   <span class="ablog__spacer">&nbsp;</span>
   <span class="ablog__next">
+    
+    
+    <a href="../set_up_kubernetes_cluster/">
+      <span>Deploying a Local Kubernetes Cluster on Ubuntu Servers</span>
+      
+      <i class="fa fa-arrow-circle-right" ></i>
+      
+    </a>
     
   </span>
 </div>
