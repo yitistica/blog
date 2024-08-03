@@ -402,7 +402,7 @@ document.write(`
   
   
   <li class="category_li">
-    <a href="../../blog/category/devops/"><span>devops (2)</span></a>
+    <a href="../../blog/category/devops/"><span>devops (3)</span></a>
   </li>
   
   
@@ -412,34 +412,36 @@ document.write(`
 </div>
 
     <div>
-<h4 class="meta_section_header">
-  
-  
-  <a href="../../blog/">Recently Written</a>
-  
-  
-  
-  <a href="../../blog/">Recently Written</a>
-  
-  
-</h4>
-<ul class="category_ul">
-  
-  <li class="category_li">
-    <a href="../set_up_docker_image_registry_for_kubernetes/">
-      <span>Setting Up a Private Docker Registry</span>
-    </a>
-     <span> - 2024-07-12</span>
-  </li>
-  
-  <li class="category_li">
-    <a href="../epyc_homelab_build/">
-      <span>My Journey of Building and Virtualizing an EPYC Server</span>
-    </a>
-     <span> - 2024-07-01</span>
-  </li>
-  
-</ul>
+    
+    
+    <h4 class="meta_section_header">
+        <a href="../../blog/">Recently Written</a>
+    </h4>
+    <ul class="category_ul">
+        
+        <li class="category_li">
+            <a href="../set_up_ollama_with_gpu_on_kubernetes/">
+                <span>Setting Up an LLM Server on Your Home Kubernetes Cluster</span>
+            </a>
+            <span> - 2024-07-26</span>
+        </li>
+        
+        <li class="category_li">
+            <a href="../set_up_docker_image_registry_for_kubernetes/">
+                <span>Setting Up a Private Docker Registry</span>
+            </a>
+            <span> - 2024-07-12</span>
+        </li>
+        
+        <li class="category_li">
+            <a href="../epyc_homelab_build/">
+                <span>My Journey of Building and Virtualizing an EPYC Server</span>
+            </a>
+            <span> - 2024-07-01</span>
+        </li>
+        
+    </ul>
+    
 </div>
 </div>
     </div>
@@ -496,7 +498,7 @@ document.write(`
 <section id="deploying-a-local-kubernetes-cluster-on-ubuntu-servers">
 <h1>Deploying a Local Kubernetes Cluster on Ubuntu Servers<a class="headerlink" href="#deploying-a-local-kubernetes-cluster-on-ubuntu-servers" title="Link to this heading">#</a></h1>
 <p>When I set up my local Kubernetes for the first time, I had to go through a lot of trial and error to get it right. There were some blog posts on setting up Kubernetes, but they were either outdated or lacked the explanation I needed. As I went through the tedious process of learning everything, I wrote down steps in my personal notebook. I figured I might as well reorganize these notes and share them with you. This is a summary of how to deploy a Kubernetes cluster locally.</p>
-<p>I will be demonstrating the setup with two virtual machines running Ubuntu 24.04 server. The first virtual machine will be the control plane node, and the second will be the worker node. I will be installing Kubernetes v1.30. For the container runtime, I will be installing Containerd 1.7.12. For the CNI plugin, I will use Flannel. Ensure you also have an adequate amount of RAM and CPU cores to run the cluster.</p>
+<p>I will be demonstrating the setup with two virtual machines running Ubuntu 24.04 Server. The first virtual machine will be the control plane node, and the second will be the worker node. I will be installing Kubernetes v1.30. For the container runtime, I will be installing Containerd 1.7.12. For the CNI plugin, I will use Flannel. Ensure you also have an adequate amount of RAM and CPU cores to run the cluster.</p>
 <section id="preparing-host-machines">
 <h2>Preparing Host Machines<a class="headerlink" href="#preparing-host-machines" title="Link to this heading">#</a></h2>
 <p>You may find installation guides on the internet including the official ones inconsistent with each other when it comes to configuring the host machines. Some settings are mandatory on one type of setup, but not on another. It stems from the fact that different components of Kubernetes require different dependent modules for different settings. Even if some modules are not needed, depending on the version of Kubernetes you are installing, they might be required in <a class="reference external" href="https://github.com/kubernetes/kubernetes/pull/123464">Kubernetes preflight checks</a> that would raise an error if the modules are not detected. I think it is important to stay informed about the changes in the evolving Kubernetes ecosystem. The following are the most crucial settings that I have found working for setting up a current or recent versions of Kubernetes. Unless you’re certain that you need to deviate from these steps, you may configure the following manually.</p>
@@ -828,6 +830,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 
 <span class="c1"># create a Kubernetes Secret for accessing private registry:</span>
 kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>docker-registry<span class="w"> </span>&lt;secret-name&gt;<span class="w"> </span><span class="se">\</span>
+--namespace<span class="w"> </span>kube-flannel<span class="w"> </span><span class="se">\</span>
 --docker-server<span class="o">=</span>&lt;your-registry-server&gt;<span class="w"> </span><span class="se">\</span>
 --docker-username<span class="o">=</span>&lt;username<span class="w"> </span>to<span class="w"> </span>log<span class="w"> </span>into<span class="w"> </span>the<span class="w"> </span>docker<span class="w"> </span>registry&gt;<span class="w"> </span><span class="se">\</span>
 --docker-password<span class="o">=</span>&lt;password<span class="w"> </span>to<span class="w"> </span>log<span class="w"> </span>into<span class="w"> </span>the<span class="w"> </span>docker<span class="w"> </span>registry&gt;
@@ -892,7 +895,7 @@ kubectl<span class="w"> </span>-n<span class="w"> </span>kube-flannel<span class
 <p>Assuming that you have all previous steps correctly, you should now be able to join the worker nodes to the cluster. If you are using a private image registry, ensure the related setups are also completed on the worker nodes as well.</p>
 <p>Now <strong>on your controller node</strong>, run the following command.</p>
 <div class="literal-block-wrapper docutils container" id="id25">
-<div class="code-block-caption"><span class="caption-text">Command: create new join command for worker nodes (on controller node)</span><a class="headerlink" href="#id25" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">Command: create new join command for worker nodes (on controller nodes)</span><a class="headerlink" href="#id25" title="Link to this code">#</a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>kubeadm<span class="w"> </span>token<span class="w"> </span>create<span class="w"> </span>--print-join-command
 </pre></div>
 </div>
@@ -900,7 +903,7 @@ kubectl<span class="w"> </span>-n<span class="w"> </span>kube-flannel<span class
 <p>This command generates a new token and provides the complete join command that can be used to add new worker nodes to the existing cluster.</p>
 <p>Copy the output command and run it with sudo on each worker node. The command will look similar to this:</p>
 <div class="literal-block-wrapper docutils container" id="id26">
-<div class="code-block-caption"><span class="caption-text">Command: join worker nodes to the cluster (on worker node)</span><a class="headerlink" href="#id26" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">Command: join worker nodes to the cluster (on worker nodes)</span><a class="headerlink" href="#id26" title="Link to this code">#</a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>kubeadm<span class="w"> </span>join<span class="w"> </span><span class="m">192</span>.168.1.179:6443<span class="w"> </span>--token<span class="w"> </span>djbije.06tw1yghp5sqpcml<span class="w"> </span>--discovery-token-ca-cert-hash<span class="w"> </span>sha256:ed972e37c2dfec7b3a0daefd04948622bc5829deeb6e9d4cf7fe2c28c277008b
 </pre></div>
 </div>
@@ -994,6 +997,14 @@ sudo<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span
   </span>
   <span class="ablog__spacer">&nbsp;</span>
   <span class="ablog__next">
+    
+    
+    <a href="../set_up_ollama_with_gpu_on_kubernetes/">
+      <span>Setting Up an LLM Server on Your Home Kubernetes Cluster</span>
+      
+      <i class="fa fa-arrow-circle-right" ></i>
+      
+    </a>
     
   </span>
 </div>
