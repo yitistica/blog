@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=7b4e0dc9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f1baa633" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -401,11 +401,11 @@ document.write(`
 <ul class="category_ul">
   
   
+  
+  
   <li class="category_li">
     <a href="../../blog/category/devops/"><span>devops (3)</span></a>
   </li>
-  
-  
   
   
 </ul>
@@ -420,6 +420,13 @@ document.write(`
     <ul class="category_ul">
         
         <li class="category_li">
+            <a href="../what_is_agentic_system/">
+                <span>My Two Cents on Agentic AI</span>
+            </a>
+            <span> - 2024-08-25</span>
+        </li>
+        
+        <li class="category_li">
             <a href="../set_up_ollama_with_gpu_on_kubernetes/">
                 <span>Setting Up an LLM Server on Your Home Kubernetes Cluster</span>
             </a>
@@ -431,13 +438,6 @@ document.write(`
                 <span>Setting Up a Private Docker Registry</span>
             </a>
             <span> - 2024-07-12</span>
-        </li>
-        
-        <li class="category_li">
-            <a href="../epyc_homelab_build/">
-                <span>My Journey of Building and Virtualizing an EPYC Server</span>
-            </a>
-            <span> - 2024-07-01</span>
         </li>
         
     </ul>
@@ -589,18 +589,17 @@ lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>gre
 </div>
 </div>
 <p>By executing <code class="code highlight bash docutils literal highlight-bash">systemctl<span class="w"> </span>status<span class="w"> </span>containerd</code>, you can verify that the service is running. The output should look like the following.</p>
-<div class="no-copybutton console-output highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="go">No VM guests are running outdated hypervisor (qemu) binaries on this host.</span>
-<span class="linenos"> 2</span><span class="go">● containerd.service - containerd container runtime</span>
-<span class="linenos"> 3</span><span class="go">     Loaded: loaded (/usr/lib/systemd/system/containerd.service; enabled; preset: enabled)</span>
-<span class="linenos"> 4</span><span class="go">     Active: active (running) since Fri 2024-07-19 07:31:40 UTC; 4s ago</span>
-<span class="linenos"> 5</span><span class="go">       Docs: https://containerd.io</span>
-<span class="linenos"> 6</span><span class="go">    Process: 5649 ExecStartPre=/sbin/modprobe overlay (code=exited, status=0/SUCCESS)</span>
-<span class="linenos"> 7</span><span class="go">   Main PID: 5658 (containerd)</span>
-<span class="linenos"> 8</span><span class="go">      Tasks: 18</span>
-<span class="linenos"> 9</span><span class="go">     Memory: 14.8M (peak: 16.9M)</span>
-<span class="linenos">10</span><span class="go">        CPU: 133ms</span>
-<span class="linenos">11</span><span class="go">     CGroup: /system.slice/containerd.service</span>
-<span class="linenos">12</span><span class="go">             └─5658 /usr/bin/containerd</span>
+<div class="no-copybutton console-output highlight-console notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="go">● containerd.service - containerd container runtime</span>
+<span class="linenos"> 2</span><span class="go">     Loaded: loaded (/usr/lib/systemd/system/containerd.service; enabled; preset: enabled)</span>
+<span class="linenos"> 3</span><span class="go">     Active: active (running) since Fri 2024-07-19 07:31:40 UTC; 4s ago</span>
+<span class="linenos"> 4</span><span class="go">       Docs: https://containerd.io</span>
+<span class="linenos"> 5</span><span class="go">    Process: 5649 ExecStartPre=/sbin/modprobe overlay (code=exited, status=0/SUCCESS)</span>
+<span class="linenos"> 6</span><span class="go">   Main PID: 5658 (containerd)</span>
+<span class="linenos"> 7</span><span class="go">      Tasks: 18</span>
+<span class="linenos"> 8</span><span class="go">     Memory: 14.8M (peak: 16.9M)</span>
+<span class="linenos"> 9</span><span class="go">        CPU: 133ms</span>
+<span class="linenos">10</span><span class="go">     CGroup: /system.slice/containerd.service</span>
+<span class="linenos">11</span><span class="go">             └─5658 /usr/bin/containerd</span>
 </pre></div>
 </div>
 <p>As one may see at Process attribute, Containerd actually helped loading <strong>overlay</strong> before starting it main service.</p>
@@ -956,8 +955,8 @@ kubectl<span class="w"> </span>delete<span class="w"> </span>node<span class="w"
 </div>
 <p>It will stop the services that <cite>kubeadm</cite> set up, remove all related files, and reset the network configuration.</p>
 </section>
-<section id="resetting-an-entire-cluster">
-<h3>2. Resetting an Entire Cluster<a class="headerlink" href="#resetting-an-entire-cluster" title="Link to this heading">#</a></h3>
+<section id="resetting-the-entire-cluster">
+<h3>2. Resetting The Entire Cluster<a class="headerlink" href="#resetting-the-entire-cluster" title="Link to this heading">#</a></h3>
 <p>After removing all worker nodes, you may also want to reset the entire cluster for a fresh start. Run the following on the controller node.</p>
 <div class="literal-block-wrapper docutils container" id="id31">
 <div class="code-block-caption"><span class="caption-text">Command: reset the controller node</span><a class="headerlink" href="#id31" title="Link to this code">#</a></div>
@@ -1069,7 +1068,7 @@ sudo<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-status-check">Final Status Check</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tearing-down-a-kubernetes-cluster">Tearing Down a Kubernetes Cluster</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#removing-a-node-from-a-cluster">1. Removing a Node from a Cluster</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resetting-an-entire-cluster">2. Resetting an Entire Cluster</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resetting-the-entire-cluster">2. Resetting The Entire Cluster</a></li>
 </ul>
 </li>
 </ul>

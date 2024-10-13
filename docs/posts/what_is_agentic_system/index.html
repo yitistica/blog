@@ -1,0 +1,1059 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>My Two Cents on Agentic AI &#8212; qiuyids.me</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f1baa633" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6b89569b"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'posts/what_is_agentic_system';</script>
+    <link rel="icon" href="../../_static/y_logo_icononly.png"/>
+    <link rel="author" title="About these documents" href="../../about/" />
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search/"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/yitistica_logo.png" class="logo__image only-dark" alt="qiuyids.me - Home"/>
+    <script>document.write(`<img src="../../_static/yitistica_logo.png" class="logo__image only-light" alt="qiuyids.me - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../custom-post-list/">
+    Posts
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../about/">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/yitistica" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.linkedin.com/in/qiuyids" title="Linkedin" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-linkedin fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Linkedin</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../custom-post-list/">
+    Posts
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../about/">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/yitistica" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.linkedin.com/in/qiuyids" title="Linkedin" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-linkedin fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Linkedin</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+    <div class="sidebar-start-items__item">
+    
+    
+    <h5>
+        
+        <h4 class="meta_section_header">About</h4>
+        <ul class="post_meta_ul">
+            
+            <li>
+                <span>
+                
+                <i class="fa fa-calendar"></i>
+                
+                2024-08-25
+                </span>
+            </li>
+            
+            <li>
+                <span>
+                
+                </span>
+            </li>
+        </ul>
+        
+    </h5>
+</div>
+
+    
+
+<h4 class="meta_section_header"><a href="../../blog/tag/">With Tags</a></h4>
+<ul class="tags_ul">
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/llm/"><span class="sd-badge">LLM</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/agentic/"><span class="sd-badge">agentic</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/theory/"><span class="sd-badge">theory</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/opinions/"><span class="sd-badge">opinions</span></a></li>
+    
+    
+</ul>
+
+    
+
+
+<div>
+<h4 class="meta_section_header">
+  <a href="../../blog/category/">On the Same Topic</a>
+</h4>
+<ul class="category_ul">
+  
+  
+  <li class="category_li">
+    <a href="../../blog/category/llm/"><span>LLM (1)</span></a>
+  </li>
+  
+  
+  
+  
+</ul>
+</div>
+
+    <div>
+    
+    
+    <h4 class="meta_section_header">
+        <a href="../../blog/">Recently Written</a>
+    </h4>
+    <ul class="category_ul">
+        
+        <li class="category_li">
+            <a href="../set_up_ollama_with_gpu_on_kubernetes/">
+                <span>Setting Up an LLM Server on Your Home Kubernetes Cluster</span>
+            </a>
+            <span> - 2024-07-26</span>
+        </li>
+        
+        <li class="category_li">
+            <a href="../set_up_kubernetes_cluster/">
+                <span>Deploying a Local Kubernetes Cluster on Ubuntu Servers</span>
+            </a>
+            <span> - 2024-07-15</span>
+        </li>
+        
+        <li class="category_li">
+            <a href="../set_up_docker_image_registry_for_kubernetes/">
+                <span>Setting Up a Private Docker Registry</span>
+            </a>
+            <span> - 2024-07-12</span>
+        </li>
+        
+    </ul>
+    
+</div>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">My Two...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+<section id="my-two-cents-on-agentic-ai">
+<h1>My Two Cents on Agentic AI<a class="headerlink" href="#my-two-cents-on-agentic-ai" title="Link to this heading">#</a></h1>
+<p>Agentic AI, agent-based approaches, or agentic workflows have become popular buzzwords in our field. While it has been claimed to be very promising, what it entails in terms of practical implementations and best practices is still very new and developing. Even when industry leaders such as Andrew Ng have praised the rise of agentic workflows, the specifics remain vague. As a practitioner, what spawned my motivation to investigate further is how I can hop on the train to the future and leverage such a system. As I dig deeper, I’ve found that the shapes and forms of agentic workflows are not as clear as I thought, even though the internet is flooded with articles and videos on the topic. I am not going to throw a bunch of marketing adjectives to describe it; instead, what I try to offer is a cleaner definitional abstraction of the idea, some examples, and some honest opinions on the topic.</p>
+<section id="the-very-core-definition">
+<h2>The Very Core Definition<a class="headerlink" href="#the-very-core-definition" title="Link to this heading">#</a></h2>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" open="open">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-text">Definition</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">An agentic AI system is a system that grants an AI the authority to govern autonomously within a workflow.</p>
+</div>
+</details><p>An agentic AI system is a system that grants an AI the authority to <strong>govern autonomously</strong> within a workflow. The governance part consists of two essential roles: 1. to <strong>evaluate</strong> the given state within the workflow (interchangeably, <strong>think</strong> and <strong>reason</strong> etc.); 2. to <strong>execute</strong> actions based on the evaluation. During the evaluation phase, the system will involve the AI to analyze and interpret the current context, and determine the subsequent <strong>actions</strong> in order to pursue objectives. Execution is where the AI’s decisions (determined actions) are taken into effect.</p>
+<p>In comparison, traditional workflows are designed to follow a set of static control logic in which every decision point and action are explicitly programmed, which yields no autonomy. An easy distinction differentiating highly agentic workflows from traditional workflows is that the control logic is not predefined, but rather is created dynamically from the AI’s evaluation and execution processes (of course, the meta-level framework defining the scope of the dynamic control logic is still defined by a human designer). But the difference is less distinguishable in some simple cases - for example, if the <strong>actions</strong> primarily involve choosing pre-defined downstream routines at a fixed decision point, you may call it a traditional workflow or an agentic workflow in the minimal sense. In contrast, a highly agentic system is likely to involve more complex actions, such as spawning new and even unseen steps in the workflow, or even dynamically changing the control flow based on the evaluation results. The concept of agentic in AI systems is better understood as a <strong>continuum</strong> rather than a discrete categorization.</p>
+</section>
+<section id="other-components-of-agentic-system">
+<h2>Other Components of Agentic System<a class="headerlink" href="#other-components-of-agentic-system" title="Link to this heading">#</a></h2>
+<p>The following attributes are commonly associated with agentic systems, though I don’t find that they are exclusive to such systems and can be found in other types of systems that leverage AIs, or they are simply a derivative of the core components:</p>
+<ul class="simple">
+<li><p><strong>Memory</strong>: The capacity to retain and utilize contextual information for evaluation.</p></li>
+<li><p><strong>Reasoning</strong>: The capability to analyze and process given data.</p></li>
+<li><p><strong>Planning</strong>: The aptitude for determining subsequent actions or steps.</p></li>
+<li><p><strong>Tool Calling</strong>: The ability to leverage external resources or APIs or executing specific commands.</p></li>
+</ul>
+<p><strong>Memory</strong> Serves to provide context. The specific mechanism by which this contextual information is retrieved and presented to the agent’s evaluation component is not yet conventionalized and remains open to various implementations. There could be some conversation history, system execution logs and even chunks of persistent data from a vector database. <strong>Reasoning</strong> and <strong>planning</strong> can be viewed as specific forms of <strong>evaluation</strong> - reasoning for analysis and planning for future actions. <strong>Tool calling</strong> essentially describes the invocation of specific processes with appropriate parameters, which can be considered a subset of the <strong>execution</strong> phase in a broader sense. These attributes also present in non-agentic systems.</p>
+</section>
+<section id="the-term-agentic">
+<h2>The Term <em>agentic</em><a class="headerlink" href="#the-term-agentic" title="Link to this heading">#</a></h2>
+<p>The term agent, while seemingly new in the field of large language models, has roots in other domains such as simulation modelling, which have existed for some time. At its core, an agent interacts with its environment, making decisions based on the surrounding context. This approach gives the impression of cognitive, human-like behavior. As stated, what sets agentic AI apart is that its behavior isn’t rigidly programmed for every possible environmental state. Instead, it’s equipped with certain heuristics, constraints along with defined goals, allowing it to operate with a degree of autonomy. From a human perspective, we don’t directly control or instruct the agent on every action; rather, we provide objectives and let the agent act on our behalf. This creates a relationship of agency between humans and the program, where the AI system functions as an intelligent delegate working towards our specified aims.</p>
+<p>The term “agentic”, however, is <strong>descriptive rather than prescriptive</strong>, primarily referring to the degree of autonomy an AI system has. This can be confusing and vague to practitioners as as there are no prescriptive boundaries. As AI continues to evolve, the term “agentic” may prove to be a transitory concept - a marker of our current immature position on the path to more AI-delegated systems, rather than a permanent or strictly defined category, given every AI system is expected to agentic.</p>
+</section>
+<section id="levels-of-workflow-autonomy-in-agentic-workflows">
+<h2>Levels of Workflow Autonomy in Agentic Workflows<a class="headerlink" href="#levels-of-workflow-autonomy-in-agentic-workflows" title="Link to this heading">#</a></h2>
+<p>As discussed, agentic descriptively refers to a level on the autonomy continuum or spectrum. To better understand the implementation and challenges of agentic workflows, it’s useful to break down this spectrum into distinct levels. Here’s a my extrapolated breakdown of the autonomy spectrum in workflows, from least to most autonomous:</p>
+<ol class="arabic simple">
+<li><p><strong>Static Workflow</strong>:
+- Predetermined sequence of tasks
+- No AI decision-making involved
+- Highly predictable but inflexible</p></li>
+<li><p><strong>Static Workflow with AI Routing</strong>:
+- Predefined tasks with AI at specific decision points
+- AI chooses between predetermined options
+- Limited flexibility within a structured framework</p></li>
+<li><p><strong>Dynamic Closed Workflow</strong>:
+- Finite set of predefined routes or tasks
+- AI freely assembles control flow toward a goal
+- Increased adaptability within constrained options</p></li>
+<li><p><strong>Dynamic Open Workflow</strong>:
+- No predefined workflow blueprints
+- Assumes access to a vast array of tools or ability to create tools
+- AI can write and execute code snippets as needed
+- Highest level of flexibility and autonomy</p></li>
+</ol>
+<p>Despite the the hype of agentic AIs, most real-world AI systems fall somewhere between 1 and 3. A common scenario is often just an AI agent paired with a specific tool, essentially functioning as an argument parser for that tool. Many software packages claiming to provide the underlying framework for agentic systems often impose opinionated designs and oversimplify the complex challenges faced in real-world scenario. And LLMs at the current stage, which form the backbone of many agentic systems, haven’t yet evolved to a point where they can provide consistently reliable performance across diverse tasks and contexts.</p>
+</section>
+<section id="here-are-some-examples">
+<h2>Here Are Some Examples..<a class="headerlink" href="#here-are-some-examples" title="Link to this heading">#</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+ReAct Agent</label><div class="sd-tab-content docutils">
+<p>The ReAct agent, based on the paper <a class="reference external" href="https://arxiv.org/abs/2210.03629">Synergizing Reasoning and Acting in Language Models</a>, implements an iterative question-answering strategy that combines reasoning and acting. It uses a language model to generate thoughts, choose actions (searching, looking up information, or finishing the task), and process observations. This cycle repeats until the agent formulates an answer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># source: https://github.com/ysymyth/ReAct</span>
+
+<span class="n">instruction</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Solve a question answering task with interleaving Thought, Action, Observation steps. Thought can reason about the current situation, and Action can be three types:</span>
+<span class="s2">(1) Search[entity], which searches the exact entity on Wikipedia and returns the first paragraph if it exists. If not, it will return some similar entities to search.</span>
+<span class="s2">(2) Lookup[keyword], which returns the next sentence containing keyword in the current passage.</span>
+<span class="s2">(3) Finish[answer], which returns the answer and finishes the task.</span>
+<span class="s2">Here are some examples.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">webthink_prompt</span> <span class="o">=</span> <span class="n">instruction</span> <span class="o">+</span> <span class="n">webthink_examples</span>
+
+<span class="k">def</span> <span class="nf">webthink</span><span class="p">(</span><span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">webthink_prompt</span><span class="p">,</span> <span class="n">to_print</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">question</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">idx</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">to_print</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">question</span><span class="p">)</span>
+    <span class="n">prompt</span> <span class="o">+=</span> <span class="n">question</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">n_calls</span><span class="p">,</span> <span class="n">n_badcalls</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+        <span class="n">n_calls</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">thought_action</span> <span class="o">=</span> <span class="n">llm</span><span class="p">(</span><span class="n">prompt</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;Thought </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Observation </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">thought</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="n">thought_action</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Action </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: &quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ohh...&#39;</span><span class="p">,</span> <span class="n">thought_action</span><span class="p">)</span>
+            <span class="n">n_badcalls</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">n_calls</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">thought</span> <span class="o">=</span> <span class="n">thought_action</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">llm</span><span class="p">(</span><span class="n">prompt</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;Thought </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">thought</span><span class="si">}</span><span class="se">\n</span><span class="s2">Action </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">obs</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">step</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">action</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="n">action</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">step_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Thought </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">thought</span><span class="si">}</span><span class="se">\n</span><span class="s2">Action </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="se">\n</span><span class="s2">Observation </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obs</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">prompt</span> <span class="o">+=</span> <span class="n">step_str</span>
+        <span class="k">if</span> <span class="n">to_print</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">step_str</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+        <span class="n">obs</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">step</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="s2">&quot;finish[]&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">to_print</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">info</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;n_calls&#39;</span><span class="p">:</span> <span class="n">n_calls</span><span class="p">,</span> <span class="s1">&#39;n_badcalls&#39;</span><span class="p">:</span> <span class="n">n_badcalls</span><span class="p">,</span> <span class="s1">&#39;traj&#39;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="n">info</span>
+</pre></div>
+</div>
+<p>Langchain implements a wrapper.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># implementation in langchain:</span>
+<span class="kn">from</span> <span class="nn">langgraph.prebuilt</span> <span class="kn">import</span> <span class="n">create_react_agent</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">create_react_agent</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="n">tools</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Sub Question Query Engine</label><div class="sd-tab-content docutils">
+<p>The agent handles complex queries by decomposing them into simpler parts, using appropriate tools for each sub-question, and then reconstructing a coherent overall answer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># source: Llama Index: https://docs.llamaindex.ai/en/stable/examples/query_engine/sub_question_query_engine/</span>
+
+<span class="k">class</span> <span class="nc">SubQuestionQueryEngine</span><span class="p">(</span><span class="n">Workflow</span><span class="p">):</span>
+
+    <span class="nd">@step</span><span class="p">(</span><span class="n">pass_context</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">ev</span><span class="p">:</span> <span class="n">StartEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryEvent</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span> <span class="s2">&quot;query&quot;</span><span class="p">)):</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;original_query&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="n">query</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Query is </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;original_query&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span> <span class="s2">&quot;llm&quot;</span><span class="p">)):</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;llm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="n">llm</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span> <span class="s2">&quot;tools&quot;</span><span class="p">)):</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;tools&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="n">tools</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;llm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">complete</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Given a user question, and a list of tools, output a list of</span>
+<span class="s2">            relevant sub-questions, such that the answers to all the</span>
+<span class="s2">            sub-questions put together will answer the question. Respond</span>
+<span class="s2">            in pure JSON without any markdown, like this:</span>
+<span class="s2">            </span><span class="se">{{</span>
+<span class="s2">                &quot;sub_questions&quot;: [</span>
+<span class="s2">                    &quot;What is the population of San Francisco?&quot;,</span>
+<span class="s2">                    &quot;What is the budget of San Francisco?&quot;,</span>
+<span class="s2">                    &quot;What is the GDP of San Francisco?&quot;</span>
+<span class="s2">                ]</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            Here is the user question: </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;original_query&#39;</span><span class="p">]</span><span class="si">}</span>
+
+<span class="s2">            And here is the list of tools: </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tools&#39;</span><span class="p">]</span><span class="si">}</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sub-questions are </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">response_obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">))</span>
+        <span class="n">sub_questions</span> <span class="o">=</span> <span class="n">response_obj</span><span class="p">[</span><span class="s2">&quot;sub_questions&quot;</span><span class="p">]</span>
+
+        <span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;sub_question_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub_questions</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">question</span> <span class="ow">in</span> <span class="n">sub_questions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">QueryEvent</span><span class="p">(</span><span class="n">question</span><span class="o">=</span><span class="n">question</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@step</span><span class="p">(</span><span class="n">pass_context</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">sub_question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">ev</span><span class="p">:</span> <span class="n">QueryEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnswerEvent</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sub-question is </span><span class="si">{</span><span class="n">ev</span><span class="o">.</span><span class="n">question</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">agent</span> <span class="o">=</span> <span class="n">ReActAgent</span><span class="o">.</span><span class="n">from_tools</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;tools&quot;</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;llm&quot;</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="n">ev</span><span class="o">.</span><span class="n">question</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">AnswerEvent</span><span class="p">(</span><span class="n">question</span><span class="o">=</span><span class="n">ev</span><span class="o">.</span><span class="n">question</span><span class="p">,</span><span class="n">answer</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">))</span>
+
+    <span class="nd">@step</span><span class="p">(</span><span class="n">pass_context</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">combine_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">ev</span><span class="p">:</span> <span class="n">AnswerEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StopEvent</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ready</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">collect_events</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span> <span class="p">[</span><span class="n">AnswerEvent</span><span class="p">]</span><span class="o">*</span><span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;sub_question_count&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">ready</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">answers</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;Question: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">question</span><span class="si">}</span><span class="s2">: </span><span class="se">\n</span><span class="s2"> Answer: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">answer</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">ready</span><span class="p">])</span>
+
+        <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            You are given an overall question that has been split into sub-questions,</span>
+<span class="s2">            each of which has been answered. Combine the answers to all the sub-questions</span>
+<span class="s2">            into a single answer to the original question.</span>
+
+<span class="s2">            Original question: </span><span class="si">{</span><span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;original_query&#39;</span><span class="p">]</span><span class="si">}</span>
+
+<span class="s2">            Sub-questions and answers:</span>
+<span class="s2">            </span><span class="si">{</span><span class="n">answers</span><span class="si">}</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final prompt is </span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;llm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">complete</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final response is&quot;</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">StopEvent</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+Vision Agent</label><div class="sd-tab-content docutils">
+<p>It first interprets natural language instructions like “calculate the distance between the shark and the nearest surfboard,” then generate a sequence workflow, generate code to perform object detection to identify sharks and surfboards in images or video frames, calculates distances between them.</p>
+<div class="video_wrapper align-center" style="text-align: center">
+<iframe allowfullscreen="true" src="https://www.youtube.com/embed/q1XFm21I-VQ?start=1003" style="border: 0; height: 345px; width: 560px">
+</iframe></div></div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+Crew AI</label><div class="sd-tab-content docutils">
+<p>CrewAI is a framework that enables the creation of multi-agent AI systems through a modular approach. It allows users to define custom AI agents with specific roles and goals, create detailed tasks, assemble these components into a ‘Crew’, and execute complex workflows.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># source: crewai</span>
+
+<span class="c1"># agent.py</span>
+<span class="kn">from</span> <span class="nn">crewai</span> <span class="kn">import</span> <span class="n">Agent</span>
+
+<span class="n">researcher</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="n">role</span><span class="o">=</span><span class="s1">&#39;Senior Researcher&#39;</span><span class="p">,</span>
+    <span class="n">goal</span><span class="o">=</span><span class="s1">&#39;Uncover groundbreaking technologies in AI&#39;</span><span class="p">,</span>
+    <span class="n">backstory</span><span class="o">=</span><span class="s1">&#39;Driven by curiosity, you explore and share the latest innovations.&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># task.py</span>
+<span class="kn">from</span> <span class="nn">crewai</span> <span class="kn">import</span> <span class="n">Task</span>
+
+<span class="n">research_task</span> <span class="o">=</span> <span class="n">Task</span><span class="p">(</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Identify the next big trend in AI with pros and cons.&#39;</span><span class="p">,</span>
+    <span class="n">expected_output</span><span class="o">=</span><span class="s1">&#39;A 3-paragraph report on emerging AI technologies.&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># main.py</span>
+<span class="kn">from</span> <span class="nn">crewai</span> <span class="kn">import</span> <span class="n">Crew</span><span class="p">,</span> <span class="n">Process</span>
+
+<span class="n">crew</span> <span class="o">=</span> <span class="n">Crew</span><span class="p">(</span>
+    <span class="n">agents</span><span class="o">=</span><span class="p">[</span><span class="n">researcher</span><span class="p">],</span>
+    <span class="n">tasks</span><span class="o">=</span><span class="p">[</span><span class="n">research_task</span><span class="p">],</span>
+    <span class="n">process</span><span class="o">=</span><span class="n">Process</span><span class="o">.</span><span class="n">sequential</span>
+<span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">crew</span><span class="o">.</span><span class="n">kickoff</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="s1">&#39;AI in healthcare&#39;</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-4" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-4">
+Agentic RAG</label><div class="sd-tab-content docutils">
+<p>This is an example of a minimal agentic RAG built using LangGraph.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># source: https://langchain-ai.github.io/langgraph/tutorials/rag/langgraph_agentic_rag/</span>
+<span class="kn">from</span> <span class="nn">langgraph.graph</span> <span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+<span class="kn">from</span> <span class="nn">langgraph.prebuilt</span> <span class="kn">import</span> <span class="n">ToolNode</span>
+
+<span class="c1"># Define a new graph</span>
+<span class="n">workflow</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">AgentState</span><span class="p">)</span>
+
+<span class="c1"># Define the nodes we will cycle between</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;agent&quot;</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>  <span class="c1"># agent</span>
+<span class="n">retrieve</span> <span class="o">=</span> <span class="n">ToolNode</span><span class="p">([</span><span class="n">retriever_tool</span><span class="p">])</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;retrieve&quot;</span><span class="p">,</span> <span class="n">retrieve</span><span class="p">)</span>  <span class="c1"># retrieval</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;rewrite&quot;</span><span class="p">,</span> <span class="n">rewrite</span><span class="p">)</span>  <span class="c1"># Re-writing the question</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="s2">&quot;generate&quot;</span><span class="p">,</span> <span class="n">generate</span>
+<span class="p">)</span>  <span class="c1"># Generating a response after we know the documents are relevant</span>
+<span class="c1"># Call agent node to decide to retrieve or not</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;agent&quot;</span><span class="p">)</span>
+
+<span class="c1"># Decide whether to retrieve</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;agent&quot;</span><span class="p">,</span>
+    <span class="c1"># Assess agent decision</span>
+    <span class="n">tools_condition</span><span class="p">,</span>
+    <span class="p">{</span>
+        <span class="c1"># Translate the condition outputs to nodes in our graph</span>
+        <span class="s2">&quot;tools&quot;</span><span class="p">:</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">,</span>
+        <span class="n">END</span><span class="p">:</span> <span class="n">END</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># Edges taken after the `action` node is called.</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;retrieve&quot;</span><span class="p">,</span>
+    <span class="c1"># Assess agent decision</span>
+    <span class="n">grade_documents</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;generate&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;rewrite&quot;</span><span class="p">,</span> <span class="s2">&quot;agent&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compile</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The subtle difference distinguishing it from traditional RAG is the dynamic routing mechanism, which allows the agent to call the retriever to fetch more relevant information and to continuously perform iterative refinement and decision-making based on newly acquired information.</p>
+<img alt="Agentic RAG Graph" class="align-center" src="../../_images/agentic_rag_graph.png" />
+</div>
+</div>
+</section>
+<section id="what-makes-it-appealing">
+<h2>What Makes It Appealing<a class="headerlink" href="#what-makes-it-appealing" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Less Human Workload</strong>: The key intention of agentic workflow is task delegation, which means less human involvement in routine or complex tasks.</p></li>
+<li><p><strong>Human-Compatible Interface</strong>: Agentic AI systems include a human compatible interface layer in the application systems. Unlike traditional systems that require technical knowledge to interact with APIs, these AI agents allow users to communicate their needs using natural language. This immediately makes everyone accessible to the application.</p></li>
+<li><p><strong>Goal-Orientation</strong>: Rather than programming specific tasks, users can simply state their objectives to an agentic system. Assuming the agent has the necessary capabilities and tools, it could determine the steps required to achieve the given goals. This shift from task-oriented to goal-oriented interaction significantly reduces users’ workloads.</p></li>
+<li><p><strong>Better Adaptability</strong>: While static automation has been adopted in many industries, it often comes with high setup costs and limited flexibility. Agentic systems offer a more dynamic alternative. They can adapt to new and possibly unseen scenarios and requests without extensive reprogramming, making them more flexible in contextual differences.</p></li>
+</ul>
+</section>
+<section id="theoretical-challenges-of-agentic-workflows">
+<h2>Theoretical Challenges of Agentic Workflows<a class="headerlink" href="#theoretical-challenges-of-agentic-workflows" title="Link to this heading">#</a></h2>
+<p>These are challenges arising from delegating decision-making to AI systems:</p>
+<ul class="simple">
+<li><p><strong>Reliability and Consistency Concerns</strong>: There is an irony here, one of the key reasons why we use programmatic workflows is to eliminate human errors in the process, but aren’t agentic systems also prone to AI errors as we authorize the AIs to make decisions? Programmatic systems can be refined to ensure 100% reliability in production, whereas agentic systems has potential for unexpected failures or behavior in critical scenarios. It is also difficulty in guaranteeing consistent performance across all possible inputs and situations.</p></li>
+<li><p><strong>Misalignment &amp; Mistranslation</strong>: Even if we have a clear vision in mind, there is always a risk of misinterpreted instructions due to different types of mistranslations.</p></li>
+<li><p><strong>Reduced Oversight and Control</strong>: As agentic workflows become more flexible and autonomous, predicting and controlling system behavior becomes difficult. In addition, the more complex the system, the harder it becomes to intervene effectively when issues arise. This could lead to a reduced ability to quickly correct or halt problematic processes. Injecting programmatic patches becomes incredibly challenging, and it could potentially impact working processes in the workflows.</p></li>
+<li><p><strong>Model Dependency and Volatility</strong>: The core reliance on AI models introduces volatility to the system. Updating or changing the underlying AI model in an agentic workflow can significantly alter system behavior and performance. This challenge is akin to hiring a new employee. There’s also uncertainty in how well new models will integrate with existing systems. Each significant model update may require recalibration of the entire system, potentially disrupting established processes.</p></li>
+</ul>
+</section>
+<section id="implementation-matters-of-agentic-ais-today">
+<h2>Implementation Matters of Agentic AIs (Today)<a class="headerlink" href="#implementation-matters-of-agentic-ais-today" title="Link to this heading">#</a></h2>
+<p>By looking at the examples, it may seem setting up an agentic workflow is simply integrating an LLM with a system prompt, function toolbox, and output parser, then implementing a loop that processes inputs, executes actions, and updates state until task completion. But to really apply them in practice, we will certainly have to construct a framework to maintain <strong>control</strong> over the behaviors of agentic workflows confidently. This section addresses the often-overlooked issues in implementing agentic AIs and offers my personal suggestions.</p>
+<section id="detailed-project-evaluation">
+<h3>Detailed Project Evaluation<a class="headerlink" href="#detailed-project-evaluation" title="Link to this heading">#</a></h3>
+<p>Implementing AI systems in business environments requires consideration of both potential gains and challenges before initiating development. Agentic AI systems are even more complex, therefore requiring even more extensive project assessment, particularly regarding the <strong>management of risks</strong> associated with AI errors. Businesses should always conduct detailed value analyses against the cost of maintenance. Not all automation yields higher returns than human labor, particularly in the case of highly autonomous agentic systems needing constant maintenance and expertise.</p>
+<p>There are also risks associated with AI errors or under-performance, such as taking incorrect actions that could cause inconvenience or harm to users, which may result in unexpected liabilities. External mitigation strategies for these cases should be prepared. It’s advisable to adopt <strong>gradual implementation</strong> approaches, such as starting with proof-of-concept (PoC) projects before full commitment and maintaining parallel systems during transition periods. Additionally, it’s important to ensure that an <strong>AI governance framework</strong> accompanies the development of agentic AI, ensuring responsible use within compliance.</p>
+</section>
+<section id="agentic-architecture-balanced-level-of-autonomy">
+<h3>Agentic Architecture: Balanced Level of Autonomy<a class="headerlink" href="#agentic-architecture-balanced-level-of-autonomy" title="Link to this heading">#</a></h3>
+<p>After conducting a detailed project assessment, we ought to decide what level of autonomy to equip our agentic system with. At the time of writing, the concept of agentic AI is still evolving, and the ecosystem lacks sufficiently robust tools and language models to support full-fledged autonomy. This technological gap, coupled with the inherent complexity of agentic systems, calls for a balanced approach to implementation. In essence, the level of autonomy should be carefully decided based on the project requirements, available technologies, and the need for control.</p>
+<p>Personally, I prefer building this type of solution with <strong>graph-based workflow orchestrators</strong>, which can support up to the level of dynamic closed workflows while giving us a static style of control. This approach allows for the insertion of additional measures for reliability and security while maximizing transparency, even though it may require more development effort. The benefit is a more controllable and predictable system.</p>
+</section>
+<section id="transparency-by-design">
+<h3>Transparency by Design<a class="headerlink" href="#transparency-by-design" title="Link to this heading">#</a></h3>
+<p>Transparency is the foundation for gaining control - We need to understand the agent’s decision-making process at every step. Not only that it enables regulatory compliance with ethical guidelines and legal requirements, but also it allows for effective monitoring and human intervention when necessary. There are two types of processes within a workflow we need strict scrutiny on: 1. generation by AI models, namely, how AI decisions are made &amp; 2. agentic system processes.</p>
+<p>While explainable AI for LLMs is still an under-developed field, it is still possible to implement an interaction strategies around AI models for greater explainability. For example, <strong>Chain-of-Thought (CoT) Prompting</strong>, which is technique encourages the AI to articulate its reasoning process step-by-step. There are many other explainability techniques for the underlying LLMs, you may also check out this great paper (<a class="reference external" href="https://arxiv.org/abs/2309.01029">Explainability for Large Language Models: A Survey</a>) I found recently, which provides structured overview of methods for explaining LLMs.</p>
+<a class="reference internal image-reference" href="../../_images/Explainability_for_Large_Language_Models_taxonomy.jpg"><img alt="Taxonomy of Explainability Techniques" class="align-center" src="../../_images/Explainability_for_Large_Language_Models_taxonomy.jpg" style="width: 600px;" />
+</a>
+<p>It is a lot easier to improve system level transparency. First of all, implement <strong>reproducible workflows</strong> that allows execution of specific steps. This is particularly useful for debugging stochastic processes where bugs may not consistently reappear. This will require your implement a state management system that record not just the AI’s actions, but also the context such input data and scores in which decisions were made. You may use <strong>workflow orchestrator</strong> like <strong>DAG manager</strong> to wrap individual steps and save crucial inputs and outputs to a database at runtime. Projects like LangGraph are exploring this approach. However, notice that many solutions may not support dynamic workflow generation.</p>
+</section>
+<section id="reliability-alignment">
+<h3>Reliability &amp; Alignment<a class="headerlink" href="#reliability-alignment" title="Link to this heading">#</a></h3>
+<p>Ensuring reliability and alignment is the most challenging yet crucial aspect of developing agentic AI systems, particularly when they are permitted to undertake a sequence of tasks without direct oversight. The more autonomy granted to the system, the harder it becomes to regulate its behavior due to the absence of hard-coded restrictions between actions.</p>
+<p>Reliability in this context means consistently delivering services at expectation while maintaining alignment with intended goals and ethical requirements. Key challenges include tackling hallucinations, bias management, maintaining interpretability, achieving robustness to adversarial intents, long-term consistency, regulatory compliance and etc. You should assume that underlying models may occasionally produce biased or undesired outputs, necessitating both <strong>system refinement</strong> and <strong>post-factum gatekeeping</strong> patterns integrated into system pipelines.</p>
+<p>To enhance reliability and alignment:</p>
+<ol class="arabic simple">
+<li><p>Implement constraints to keep the AI within its intended scope.</p></li>
+<li><p>Design flexible systems that allow for constant improvement, recognizing that perfection is a long-tailed goal.</p></li>
+<li><p>Break complex tasks into well-defined mini-steps for better control and evaluation if possible.</p></li>
+<li><p>Develop contingency plans for failure scenarios.</p></li>
+<li><p>Conduct thorough monitoring and testing at any time especially before rollout, including edge case analyses.</p></li>
+<li><p>Integrate risk assessment into the entire AI development lifecycle.</p></li>
+</ol>
+<p>We should acknowledge that this is an ongoing process requiring continuous monitoring, evaluation, and refinement.</p>
+</section>
+<section id="context-memory-management">
+<h3>Context Memory Management<a class="headerlink" href="#context-memory-management" title="Link to this heading">#</a></h3>
+<p>Managing memory is more than concatenating interaction history and requires a better approach to maintain relevant information. Feeding excessive context during evaluation rounds can confuse the underlying models and increase computational costs. There’s also the risk of overwhelming the token size with context, resulting in missing instructions or, worse, enabling the unintended sharing of sensitive data with end users. There are strategies we can use for memory management in agentic systems.</p>
+<ul class="simple">
+<li><p><strong>Dynamic Context Selection</strong>: Implementing algorithms to dynamically select the most relevant pieces of context for each interaction. This can involve relevance scoring based on semantic similarity to the current query, recency weighting to prioritize more recent interactions, and task-specific context filtering using LLMs.</p></li>
+<li><p><strong>Context Summarization</strong>: Instead of using full conversation history, generate and use summaries for the subsequent rounds of interation.</p></li>
+<li><p><strong>Context Isolation</strong>: Maintaining separate context pools for different tasks or agents.</p></li>
+<li><p><strong>Topic Tagging</strong>: Effective topic tagging involves automatically tagging conversation segments with relevant topics and using these tags to quickly retrieve relevant context when a topic resurfaces.</p></li>
+<li><p><strong>Context Formatting</strong>: Structuring the context in a way that helps the underlying model locate relevant information.</p></li>
+<li><p><strong>Privacy Aware Context Management</strong>: implement context scrubbing to mask sensitive information and using role-based access controls to limit which parts of the context are accessible to different components of the system. In addition, as very likely context will be also cached and save, additional measures need to be in place to prevent sensitive information being leaked and saved to additional databases.</p></li>
+</ul>
+</section>
+<section id="cost-and-speed">
+<h3>Cost and Speed<a class="headerlink" href="#cost-and-speed" title="Link to this heading">#</a></h3>
+<p>Agentic workflows often involve multiple rounds of reasoning, which can significantly increase inference costs. One approach is to use different models for different purposes within the workflow. <strong>Smaller fine-tuned models</strong> can be utilized for specific tasks, while larger models handle more complex reasoning. Additionally, <strong>LLM distillation</strong> is another promising paradigm that focuses on transfer knowledge to smaller generative models for specific tasks. This not only reduces deployment costs but can also lower per-token expenses. Alternatively, Instead of having the AI agent perform multiple separate reasoning steps, we can <strong>consolidate prompts</strong> that combine several reasoning tasks into a single, more complex prompt.</p>
+<p>For customer-facing applications like chatbots, low latency is crucial. In cases where queries are often repetitive or involve general information, implementing <strong>response caching</strong> can significantly cut down computational costs. This involves saving results and using a query classifier to identify and quickly retrieve responses for frequently asked questions.</p>
+</section>
+<section id="evaluation-testing">
+<h3>Evaluation &amp; Testing<a class="headerlink" href="#evaluation-testing" title="Link to this heading">#</a></h3>
+<p>Comprehensive evaluation and testing are crucial for agentic AI systems to ensure quality outcomes and human alignment. However, evaluating semantic outputs are difficult:</p>
+<ol class="arabic simple">
+<li><p>Agentic systems compound AI stochastic reasoning.</p></li>
+<li><p>Semantic outputs are difficult to evaluate against expectations.</p></li>
+<li><p>Creative processes can produce diverse outputs.</p></li>
+<li><p>The diversity of inputs and contexts makes it impossible to cover all scenarios, unlike in deterministic workflows.</p></li>
+</ol>
+<p>To evaluate a AI system, we generally employ the following schools of methods:</p>
+<ol class="arabic simple">
+<li><p>Statistical Metrics:</p>
+<ul class="simple">
+<li><p>Useful for short answers where expected outputs are relatively predictable.</p></li>
+<li><p>Examples include BLEU and ROUGE, which calculate precision or recall by comparing n-gram overlaps between LLM outputs and expected outputs.</p></li>
+<li><p>Fast and scalable for large datasets, but limited to surface-level textual similarities, and may not capture semantic meaning or context.</p></li>
+</ul>
+</li>
+<li><p>Model Evaluators:</p>
+<ul class="simple">
+<li><p>Leverage strong LLMs to assess the quality of another LLM’s outputs.</p></li>
+<li><p>Can provide more evaluation of complex responses.</p></li>
+<li><p>But there may already be biases in the evaluator model.</p></li>
+<li><p>Requires a trusted and competent model, can be computationally expensive.</p></li>
+</ul>
+</li>
+<li><p>User Feedback and Human Evaluation:</p>
+<ul class="simple">
+<li><p>Often the most reliable method for assessing AI performance.</p></li>
+<li><p>Can include ordinal data such as satisfaction scores or qualitative responses, which provides qualitative insights for improvement.</p></li>
+</ul>
+</li>
+<li><p>External Task Specific Benchmarks:</p>
+<ul class="simple">
+<li><p>Often includes diverse and challenging test cases.</p></li>
+<li><p>May not reflect the performance in our use cases.</p></li>
+</ul>
+</li>
+</ol>
+<p>When evaluating agentic AI systems, you should assess multiple dimensions besides its quality performance. Key aspects include the relevancy and correctness of outputs, the system’s ability to avoid hallucinations, its resistance to generating toxic content, and the consistency of responses across various inputs. Beyond these semantic qualities, it’s also crucial to evaluate operational metrics that impact user experience and system reliability. These include task completion time, and perhaps data retrieval accuracy, which serves as a proxy for overall correctness and can indicate how well the system accesses and utilizes its knowledge base.</p>
+</section>
+<section id="human-intervenability">
+<h3>Human Intervenability<a class="headerlink" href="#human-intervenability" title="Link to this heading">#</a></h3>
+<p>Errors can occur in various forms, from systematic bugs to misalignment of outcomes with intended goals. It’s crucial to design these systems with robust human intervenability features. You may implement checkpoints within the agentic system that require human approval before proceeding to the next task. This is known as <strong>human approval mechanism</strong>, which businesses might implement for high impact decisions. Alternatively, you may also design the system with the ability for human to <strong>override</strong> AI decisions and modify the inputs and outputs at any point in the process. This allows continuation of the workflow when the system encounters bugs such as invalid data formatting by LLMs.</p>
+</section>
+<section id="security-confidentiality">
+<h3>Security &amp; Confidentiality<a class="headerlink" href="#security-confidentiality" title="Link to this heading">#</a></h3>
+<p>Agentic AI systems, by their nature, are compound systems that interact with various components in your infrastructure. Granting AI agents authority to access system components such as databases introduces inherent risks. External tools and processes that agentic systems can invoke proactively must be carefully controlled and monitored. There are multiple areas we should look at to address the system security issues.</p>
+<ul class="simple">
+<li><p><strong>Risk Exposure Assessment</strong>: This involves identifying, analyzing, and evaluating the potential risks that the system may be exposed to. Common risks are prompt injection by users, data breach risks due to engineering flaws, and unintended actions due to misinterpretation by AIs. This understanding forms the foundation for building security strategies, implementing controls, and designing incident response plans.</p></li>
+<li><p><strong>Access Control</strong>: Ensure that agents have only the minimum necessary access to perform their designated tasks. For example, implement <strong>pre-configured clients</strong> for database access (instead of letting the system access the connection configuration), eliminating any possibility of direct, uncontrolled access.</p></li>
+<li><p><strong>Data Governance and Security Issues during Training</strong>: When fine-tuning LLMs to improve performance, there’s a risk of data leakage during the training process. Establish strict data governance procedures with independent auditing for training. During the inference stage, ensuring that context and confidentiality are maintained throughout the AI’s operations.</p></li>
+<li><p><strong>Multi-layered Security Measures</strong>: Implement additional protective layers, such as rule sets that govern AI behavior and alert systems that monitor user interactions for any suspicious activities. For example, implement a validator against the end-user privilege, checking whether they could carry on certain operations.</p></li>
+<li><p><strong>Architectural Isolation</strong>: Break up the agentic systems into smaller, independent microservices, this approach limits the potential damage from a security breach to a single service.</p></li>
+<li><p><strong>Intervention Protocol</strong>:  Intervention protocols are pre-planned procedures to rapidly respond to security threats, including the ability to partially or completely shut down the system if necessary. Also provides override capabilities and allow human intervention once potential security threats are detected.</p></li>
+</ul>
+</section>
+<section id="accountability-contingency-planning">
+<h3>Accountability &amp; Contingency Planning<a class="headerlink" href="#accountability-contingency-planning" title="Link to this heading">#</a></h3>
+<p>Implementing agentic AI systems that assist in decision-making processes comes with significant ethical and legal risks. Key concerns include protecting privacy, mitigating biases, ensuring explainable AI decisions, and maintaining regulatory compliance. As AI systems can make mistakes, it’s crucial to establish measures for accountability. To address the issues:</p>
+<ul class="simple">
+<li><p>Regularly audit data to uncover potential biases, monitor system performance for unfair outcomes, and incorporate human feedback to address discovered biases for fine tuning.</p></li>
+<li><p>Establish clear ethical guidelines for AI development with oversight mechanisms to stay compliant with the regulations.</p></li>
+<li><p>Develop clear protocols for handling disputes or complaints related to AI decisions.</p></li>
+<li><p>Create contingency plans that include incident response strategies e.g., rollback for scenarios like data breaches or system malfunctions.</p></li>
+</ul>
+</section>
+</section>
+<section id="closing-thoughts">
+<h2>Closing Thoughts<a class="headerlink" href="#closing-thoughts" title="Link to this heading">#</a></h2>
+<p>Sure, the concept feels like the primitive form of AGI in the future - I would imagine that such an AI system is equipped with a good enough AI model that acts as the central brain and is given extensive control of the underlying system with tools it could leverage. Then we will truly interact with the AI system as if it is an intelligent agent. For now, we will need to learn what decisions are delegated to an AI agent if we are building an agentic system. The evaluation of risks and effects should be fully examined. To practitioners, reliability is more important than features. You should always prepare countermeasures in case it fails.</p>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+  
+  
+
+
+<div class="section ablog__prev-next">
+  <span class="ablog__prev">
+    
+    
+    <a href="../set_up_ollama_with_gpu_on_kubernetes/">
+      
+      <i class="fa fa-arrow-circle-left"></i>
+      
+      <span>Setting Up an LLM Server on Your Home Kubernetes Cluster</span>
+    </a>
+    
+  </span>
+  <span class="ablog__spacer">&nbsp;</span>
+  <span class="ablog__next">
+    
+  </span>
+</div>
+
+  
+  
+</div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-very-core-definition">The Very Core Definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-components-of-agentic-system">Other Components of Agentic System</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-term-agentic">The Term <em>agentic</em></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#levels-of-workflow-autonomy-in-agentic-workflows">Levels of Workflow Autonomy in Agentic Workflows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#here-are-some-examples">Here Are Some Examples..</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-makes-it-appealing">What Makes It Appealing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#theoretical-challenges-of-agentic-workflows">Theoretical Challenges of Agentic Workflows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-matters-of-agentic-ais-today">Implementation Matters of Agentic AIs (Today)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#detailed-project-evaluation">Detailed Project Evaluation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#agentic-architecture-balanced-level-of-autonomy">Agentic Architecture: Balanced Level of Autonomy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transparency-by-design">Transparency by Design</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reliability-alignment">Reliability &amp; Alignment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#context-memory-management">Context Memory Management</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cost-and-speed">Cost and Speed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-testing">Evaluation &amp; Testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#human-intervenability">Human Intervenability</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#security-confidentiality">Security &amp; Confidentiality</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#accountability-contingency-planning">Accountability &amp; Contingency Planning</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#closing-thoughts">Closing Thoughts</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Yi Q.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
