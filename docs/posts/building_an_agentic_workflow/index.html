@@ -355,7 +355,7 @@ document.write(`
                 
                 <i class="fa fa-calendar"></i>
                 
-                2024-08-22
+                2024-09-15
                 </span>
             </li>
             
@@ -397,6 +397,11 @@ document.write(`
     
     <li class="tag_li">
         <a href="../../blog/tag/langgraph/"><span class="sd-badge">LangGraph</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/weekend-build/"><span class="sd-badge">weekend-build</span></a></li>
     
     
 </ul>
@@ -520,6 +525,17 @@ document.write(`
 <h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
 <p>It’s becoming increasingly common to see mobile robots delivering toiletries to a customer’s room in a hotel nowadays, but a customer’s request is still manually handled by a receptionist. This workflow may become fully automated now with the advent of LLMs.</p>
 <p>When it comes to integrating LLMs into business workflows, there’s often a tendency to oversimplify the complexities involved. Conversations typically get bogged down in feature-focused hype, causing us to miss the real challenges of implementing these solutions in business contexts. I recently worked on a PoC similar in nature to an LLM-powered hotel front desk, and I find this a fitting use case for these models given their current capabilities - It doesn’t need deep specialization, mainly handling simpler tasks with minimal context. Even if it fails on some occasions, the consequences are not major. That also means we can employ smaller local models, which ensure data privacy and availability at a small integration cost with minimal overhead. That opens up a possibility for similar businesses.</p>
+</section>
+<section id="what-we-are-doing-today">
+<h2>What We Are Doing Today..<a class="headerlink" href="#what-we-are-doing-today" title="Link to this heading">#</a></h2>
+<p>Something completely local!</p>
+<section id="requisites">
+<h3>requisites<a class="headerlink" href="#requisites" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>an LLM service, local Ollama preferred.</p></li>
+</ul>
+<p>I will try breaking it up. For those who wish to only see a demo of the construction.</p>
+<p>Warning: this is intent for home server.</p>
 <p>Here, I will construct</p>
 <p>How Agentic Workflows Work?</p>
 <p>Tools:</p>
@@ -533,6 +549,7 @@ document.write(`
 <p>Sometimes we allow agents to create subsequent tasks or chain or reasoning dynamically.</p>
 </section>
 </section>
+</section>
 
 <div class="section ablog__blog_comments">
   
@@ -543,24 +560,16 @@ document.write(`
   <span class="ablog__prev">
     
     
-    <a href="../set_up_ollama_with_gpu_on_kubernetes/">
+    <a href="../what_is_agentic_system/">
       
       <i class="fa fa-arrow-circle-left"></i>
       
-      <span>Setting Up an LLM Server on Your Home Kubernetes Cluster</span>
+      <span>My Two Cents on Agentic AI</span>
     </a>
     
   </span>
   <span class="ablog__spacer">&nbsp;</span>
   <span class="ablog__next">
-    
-    
-    <a href="../what_is_agentic_system/">
-      <span>My Two Cents on Agentic AI</span>
-      
-      <i class="fa fa-arrow-circle-right" ></i>
-      
-    </a>
     
   </span>
 </div>
@@ -597,6 +606,10 @@ document.write(`
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-we-are-doing-today">What We Are Doing Today..</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#requisites">requisites</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
