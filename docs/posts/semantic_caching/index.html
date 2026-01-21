@@ -1,0 +1,740 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Implementing Semantic Caching in Production &#8212; qiuyids.me</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f1baa633" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6b89569b"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'posts/semantic_caching';</script>
+    <link rel="icon" href="../../_static/y_logo_icononly.png"/>
+    <link rel="author" title="About these documents" href="../../about/" />
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />   
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search/"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/yitistica_logo.png" class="logo__image only-dark" alt="qiuyids.me - Home"/>
+    <img src="../../_static/yitistica_logo.png" class="logo__image only-light pst-js-only" alt="qiuyids.me - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../custom-post-list/">
+    Posts
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../about/">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/yitistica" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.linkedin.com/in/qiuyids" title="Linkedin" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-linkedin fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Linkedin</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../custom-post-list/">
+    Posts
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../about/">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/yitistica" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.linkedin.com/in/qiuyids" title="Linkedin" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-linkedin fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Linkedin</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+    <div class="sidebar-start-items__item">
+    
+    
+    <h5>
+        
+        <h4 class="meta_section_header">About</h4>
+        <ul class="post_meta_ul">
+            
+            <li>
+                <span>
+                
+                <i class="fa fa-calendar"></i>
+                
+                2025-07-02
+                </span>
+            </li>
+            
+            <li>
+                <span>
+                
+                </span>
+            </li>
+        </ul>
+        
+    </h5>
+</div>
+
+    
+
+<h4 class="meta_section_header"><a href="../../blog/tag/">With Tags</a></h4>
+<ul class="tags_ul">
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/technical-advices/"><span class="sd-badge">technical advices</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/opinions/"><span class="sd-badge">opinions</span></a></li>
+    
+    
+</ul>
+
+    
+
+
+<div>
+<h4 class="meta_section_header">
+  <a href="../../blog/category/">On the Same Topic</a>
+</h4>
+<ul class="category_ul">
+  
+  
+  
+  
+  
+  
+  <li class="category_li">
+    <a href="../../blog/category/rag/"><span>RAG (1)</span></a>
+  </li>
+  
+  
+  
+  
+</ul>
+</div>
+
+    <div>
+    
+    
+    <h4 class="meta_section_header">
+        <a href="../../blog/">Recently Written</a>
+    </h4>
+    <ul class="category_ul">
+        
+        <li class="category_li">
+            <a href="../what_is_agentic_system/">
+                <span>My Two Cents on Agentic AI</span>
+            </a>
+            <span> - 2024-08-25</span>
+        </li>
+        
+        <li class="category_li">
+            <a href="../set_up_ollama_with_gpu_on_kubernetes/">
+                <span>Setting Up an LLM Server on Your Home Kubernetes Cluster</span>
+            </a>
+            <span> - 2024-07-26</span>
+        </li>
+        
+        <li class="category_li">
+            <a href="../set_up_kubernetes_cluster/">
+                <span>Deploying a Local Kubernetes Cluster on Ubuntu Servers</span>
+            </a>
+            <span> - 2024-07-15</span>
+        </li>
+        
+        <li class="category_li">
+            <a href="../route_docker_image_pulls_through_vpn_tunnel/">
+                <span>Routing Docker Image Pulls Through a VPN Tunnel</span>
+            </a>
+            <span> - 2024-07-13</span>
+        </li>
+        
+        <li class="category_li">
+            <a href="../set_up_docker_image_registry_for_kubernetes/">
+                <span>Setting Up a Private Docker Registry</span>
+            </a>
+            <span> - 2024-07-12</span>
+        </li>
+        
+    </ul>
+    
+</div>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Implementing Semantic Caching in Production</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                   <section id="implementing-semantic-caching-in-production">
+<h1>Implementing Semantic Caching in Production<a class="headerlink" href="#implementing-semantic-caching-in-production" title="Link to this heading">#</a></h1>
+<p>Caching is a core strategy for optimizing performance of computation-intensive applications. The rationale is straightforward: assuming that the same inputs will be requested multiple times, so we store the input-output pairs in a fast-access database and simply retrieve them when the same input comes up again. This principle has been adopted by AI systems.</p>
+<p>However, unlike traditional exact-match caching, which relies on deterministic hashing, semantic caching involves a step of taking a guess whether a new query has been asked before by comparing its vectorized semantic representation’s distance to all previously cached queries in a high-dimensional vector space. While this approach reduces computational overhead thus cost and latency in theory, productionizing semantic caching requires careful consideration of possible limitations.</p>
+<section id="the-process-of-finding-semantic-cache">
+<h2>The Process of Finding Semantic Cache<a class="headerlink" href="#the-process-of-finding-semantic-cache" title="Link to this heading">#</a></h2>
+<p>Take a chatbot as an example. The system breaks the user’s question into tokens and runs it through a transformer model usually. The model uses learned weights from contextual relationships to create a vector that represents the question’s meaning.</p>
+<p>To check for cached responses, the system measures how close this new vector is to all the vectors we’ve stored before. It finds the “closest” match using similarity calculations like cosine similarity. If the distance is small enough (below our threshold), the system returns the cached answer instead. Of course, when there are no close enough matches, the main workflow proceeds with the heavy computation to generate a fresh response.</p>
+</section>
+<section id="the-limititations-of-embedding">
+<h2>The Limititations of Embedding<a class="headerlink" href="#the-limititations-of-embedding" title="Link to this heading">#</a></h2>
+<p>As you may have already spotted the core issue: how effective is our algorithm for truly giving us the real match? What if a user asks “where is London Rd” vs “where is London”?</p>
+<p>And indeed this is a common oversight - the discrepancy between a model’s general adequacy and domain-specific precision.</p>
+<p>The fundamental problem is that we’re using relatively simple mathematical operations like cosine similarity to capture complex semantic relationships. <strong>These distance metrics assume that proximity in vector space accurately reflects semantic similarity, but this assumption often breaks down in practice.</strong></p>
+<p>Additionally, embedding models are effectively <strong>black boxes trained on generalized corpora.</strong> In specialized domains, such as legal or medical fields, this generalization fails. A general-purpose model may map two queries as semantically identical while failing to distinguish technical nuances that fundamentally alter the required answer. Furthermore, the embedding process is a byproduct of the model’s training objective, not a process optimized specifically for domain-specific search contexts.</p>
+</section>
+<section id="input-sensitivity-and-negation">
+<h2>Input Sensitivity and Negation<a class="headerlink" href="#input-sensitivity-and-negation" title="Link to this heading">#</a></h2>
+<p><strong>Vector similarity has blind spots</strong> that make certain types of queries problematic. A critical issue is the “negation” problem, where semantically opposite queries <strong>could</strong> produce nearly identical embeddings.</p>
+<p>Consider “What products contain gluten?” versus “What products do not contain gluten?” These queries share most of their semantic tokens - “products,” “contain,” and “gluten” - with only the negation “not” differentiating them. Since embedding models weight shared tokens heavily, both queries map to nearly identical positions in vector space.</p>
+<p>This creates a dangerous failure mode: the system calculates high similarity between these opposite queries and serves a cached answer that directly contradicts the user’s intent. The issue is that <strong>cosine similarity measures lexical and semantic overlap, not logical meaning.</strong> When queries involve negations, specific filters, or boolean logic, high semantic proximity becomes a misleading indicator that can produce completely incorrect results.</p>
+</section>
+<section id="strategies-for-key-construction">
+<h2>Strategies for Key Construction<a class="headerlink" href="#strategies-for-key-construction" title="Link to this heading">#</a></h2>
+<p>The choice of what to embed as the cache key determines both the accuracy and utility of the entire system. This decision involves a critical trade-off between matching precision and retrieval recall.</p>
+<p><strong>Symmetric Embedding (Query-Only)</strong>: This approach embeds only the user’s question, creating a pure intent-matching system. The advantage is broad applicability - any question with similar phrasing will match regardless of the specific answer content. However, this creates dangerous ambiguity scenarios.</p>
+<p>Consider the query “What is the capital of Georgia?” This could refer to the U.S. state (Atlanta) or the country (Tbilisi). A query-only embedding cannot distinguish between these contexts, potentially serving the wrong cached answer based purely on linguistic similarity.</p>
+<p><strong>Asymmetric Embedding (Query-Plus-Context)</strong>: This strategy embeds the query alongside elements of the generated response, metadata, or retrieval context. The resulting key captures both the question and the contextual framework of the answer.</p>
+<p>This approach prevents shallow matches where questions sound similar but require different knowledge domains. The query about Georgia would embed differently depending on whether the cached response discusses U.S. states or European countries. However, asymmetric keys reduce hit rates significantly. Slight variations in answer phrasing or metadata can prevent legitimate matches, forcing expensive recomputation for essentially identical queries.</p>
+<p>The Granularity Dilemma: Neither approach solves the fundamental tension between precision and recall. More specific keys (including context) reduce false positives but increase false negatives. More general keys (query-only) improve hit rates but risk serving incorrect answers.</p>
+<p>Advanced implementations attempt hybrid approaches - using query-only matching for initial retrieval, then applying context-aware filtering. But this adds computational complexity and latency, potentially negating the performance benefits of caching.</p>
+</section>
+<section id="temporal-and-implicit-context">
+<h2>Temporal and Implicit Context<a class="headerlink" href="#temporal-and-implicit-context" title="Link to this heading">#</a></h2>
+<p>Semantic caching faces another fundamental challenge with time-sensitive and context-dependent queries. The core problem is that embedding does not validate implicit context.</p>
+<p>Consider “What is the weather today?” asked on Monday versus the same query asked on Tuesday. These produce nearly identical embeddings since they share all semantic tokens, yet they require completely different answers. The cache treats them as equivalent matches, potentially serving Monday’s weather forecast to Tuesday’s user.</p>
+<p>This temporal blindness extends beyond obvious time references. Queries like “What’s the latest news?” or “Show me current stock prices” embed similarly regardless of when they’re asked, but their answers become stale within hours or minutes.</p>
+<p>The available usual solutions each carry significant trade-offs:</p>
+<p><strong>Global Expiry</strong>: Setting aggressive TTLs (Time To Live) forces frequent cache invalidation. While this ensures freshness, it dramatically reduces hit rates and eliminates most caching benefits, making the system less efficient than no cache at all.</p>
+<p><strong>LLM Classification</strong>: Pre-processing queries with an LLM to identify temporal elements adds computational overhead to every request. This approach defeats the purpose of caching by introducing additional latency and API costs before even checking the cache.</p>
+<p><strong>Negative Caching</strong>: Manually curating patterns to bypass the cache requires ongoing maintenance and domain expertise. This reactive approach inevitably misses edge cases and creates blind spots where temporal queries slip through.</p>
+<p>The issue is that <strong>semantic similarity operates in a timeless vector space</strong>, while real-world queries often carry implicit context that vectors cannot capture.</p>
+</section>
+<section id="addressing-false-positives">
+<h2>Addressing False Positives<a class="headerlink" href="#addressing-false-positives" title="Link to this heading">#</a></h2>
+<p>When two semantically different queries produce similar embeddings, vector space provides no mechanism to understand or prevent this conflation.</p>
+<p>The available interventions are usually reactive and incomplete:</p>
+<p><strong>Negative Caching</strong>: Maintaining a blacklist of known bad matches requires manual discovery of each failure case. This approach is inherently reactive - you only learn about problems after users receive incorrect responses.</p>
+<p><strong>Vector Store Pruning</strong>: Aggressively removing similar vectors reduces false positives but also eliminates legitimate matches, defeating the purpose of caching.</p>
+<p><strong>String-Based Pre-processing</strong>: Adding lexical filters before semantic matching introduces brittleness and misses nuanced cases where the same words have different meanings in different contexts.</p>
+</section>
+<section id="high-density-data-and-granularity">
+<h2>High-Density Data and Granularity<a class="headerlink" href="#high-density-data-and-granularity" title="Link to this heading">#</a></h2>
+<p>Semantic caching fails catastrophically in domains requiring high precision, where small differences carry large semantic weight. The problem is that embedding models compress nuanced distinctions into similar vector representations.</p>
+<p>Consider a real estate application caching property information. Queries for “10 London Road” and “11 London Road” produce nearly identical embeddings - they share the same street name, similar house numbers, and identical semantic structure. The embedding model correctly identifies them as highly similar concepts.</p>
+<p>But from a business perspective, these represent completely different properties with different owners, prices, and characteristics. A cache hit serving information about the wrong address could have serious legal and financial consequences. This extends beyond addresses to any domain with meaningful numerical distinctions. Medical dosages (“5mg” vs “50mg”), or financial amounts (“$1,000” vs “$10,000”) often embed similarly because the surrounding context dominates the vector representation.</p>
+</section>
+<section id="dependency-on-vendor-models">
+<h2>Dependency on Vendor Models<a class="headerlink" href="#dependency-on-vendor-models" title="Link to this heading">#</a></h2>
+<p>When OpenAI releases a new version of their embedding model, the entire semantic cache in use is expected to be obsolete soon. Vectors generated by the old model cannot be meaningfully compared to vectors from the new model, as they exist in entirely different spaces. This creates a catastrophic maintenance scenario. Consider a production system with millions of cached query-response pairs. A vendor model update forces a complete cache rebuild: every historical query must be re-embedded using the new model, and every vector in the database must be replaced. For large-scale systems, this process is expensive. Some may look into self-hosted embedding alternatives, which require significant infrastructure investment and ongoing maintenance, often negating the cost benefits of caching.</p>
+</section>
+<section id="architectural-coupling-and-optimization">
+<h2>Architectural Coupling and Optimization<a class="headerlink" href="#architectural-coupling-and-optimization" title="Link to this heading">#</a></h2>
+<p>Effective semantic caching requires deep integration with the application architecture, the performance and failure modes demand careful orchestration across multiple system components.</p>
+<p><strong>State Reuse and Computational Efficiency</strong>: A critical optimization involves eliminating redundant embedding generation. When a cache lookup misses, the query embedding computed for similarity search should be preserved and passed to downstream RAG components. This prevents the expensive re-computation of the same vector for knowledge retrieval.</p>
+<p>However, this optimization requires tighter coupling between cache and retrieval systems. The embedding must be passed through the entire request pipeline, requiring changes to API contracts and data flow architecture. Many organizations treat caching as an isolated optimization, missing this crucial efficiency gain.</p>
+<p><strong>Parallel Execution and Race Conditions</strong>: To minimize latency impact, cache lookups can run in parallel with LLM generation. This hedging strategy ensures that slow cache operations don’t delay response times. But it introduces complex orchestration challenges.</p>
+<p>The system must be able to terminate active LLM requests immediately upon cache hits to avoid wasted tokens and compute. This requires streaming API integration and careful state management to prevent race conditions where both cached and generated responses are delivered to users.</p>
+<p><strong>Async Write Operations and Consistency</strong>: Cache persistence must be completely decoupled from user-facing response times. Writing new query-response pairs to the vector store should happen asynchronously in the background, allowing users to receive responses immediately.</p>
+<p>This creates eventual consistency challenges. Failed background writes must fail silently to avoid disrupting user experience, but they also create gaps in cache coverage. The system needs monitoring and retry mechanisms for write failures without impacting the primary request flow.</p>
+<p><strong>Resource Allocation and Scaling</strong>: Vector similarity search scales differently than traditional database operations. As cache size grows, search latency increases logarithmically (for approximate nearest neighbor algorithms) or linearly (for exact search). The cache can become a bottleneck that’s more expensive than the LLM calls it’s meant to replace.</p>
+<p>This requires dynamic resource allocation and potentially cache partitioning strategies. But partitioning reduces hit rates by fragmenting the search space, creating another performance trade-off that must be carefully managed.</p>
+</section>
+<section id="the-calculus-of-latency-and-cost">
+<h2>The Calculus of Latency and Cost<a class="headerlink" href="#the-calculus-of-latency-and-cost" title="Link to this heading">#</a></h2>
+<p>Semantic caching introduces a complex economic equation where the benefits are probabilistic but the costs are guaranteed. Every implementation must solve a fundamental trade-off: the certain overhead of cache operations versus the uncertain savings from cache hits.</p>
+<p>The Latency Paradox: <strong>Cache lookups are never free.</strong> Each incoming query requires embedding generation plus vector similarity search. In sequential architectures, cache misses accumulate this overhead on top of the original LLM latency. For applications with low hit rates, semantic caching actually degrades performance compared to direct LLM calls.</p>
+<p>This creates a vicious cycle in high-variance environments. Applications with diverse queries experience low hit rates, making the cache overhead more expensive than the LLM calls it’s meant to replace. The cache becomes a performance liability rather than an optimization.</p>
+<p>The Economic Viability Matrix: Cost effectiveness depends on multiple interdependent factors:</p>
+<p><strong>Query Variance vs. Hit Rate</strong>: Applications with repetitive query patterns (customer support, FAQ systems) achieve high hit rates, making caching economically viable. Applications with creative or analytical queries (research tools, content generation) often see low hit rates, where cache infrastructure costs exceed LLM API savings.</p>
+<p><strong>Threshold Sensitivity</strong>: Conservative similarity thresholds (0.95+) ensure accuracy but reduce hit rates. Aggressive thresholds (0.8-) improve hit rates but introduce false positives that damage user experience. There’s no universal sweet spot - each domain requires extensive tuning.</p>
+<p><strong>Knowledge Volatility</strong>: Rapidly changing domains (news, financial data, current events) require frequent cache invalidation, reducing effective hit rates. Static domains (historical data, reference materials) maintain cache value longer but represent a smaller market opportunity.</p>
+<p><strong>Infrastructure Scaling</strong>: Vector databases scale differently than traditional caches. As the cache grows, similarity search becomes more expensive, eventually reaching a point where cache look ups cost more than LLM inference.</p>
+</section>
+<section id="implementation-tips-in-practice">
+<h2>Implementation Tips in Practice<a class="headerlink" href="#implementation-tips-in-practice" title="Link to this heading">#</a></h2>
+<p>The following implementation strategies address the most common pitfalls encountered in production deployments.</p>
+<section id="input-canonicalization">
+<h3>Input Canonicalization<a class="headerlink" href="#input-canonicalization" title="Link to this heading">#</a></h3>
+<p>Query preprocessing can significantly improve cache hit rates by normalizing variations that don’t affect meaning. Basic techniques include standardizing whitespace, converting to lowercase, and removing conversational filler words like “please,” “thanks,” or “hey bot.” However, using an LLM to rewrite queries creates a problematic cost structure. If the cache misses after an expensive query rewrite, you’ve paid for two LLM calls (rewrite + generation) instead of one. This doubles the cost for failed cache attempts, potentially making the system more expensive than no caching at all. The key is finding simple, deterministic preprocessing that improves matching without adding significant overhead.</p>
+</section>
+<section id="tiered-retrieval">
+<h3>Tiered Retrieval<a class="headerlink" href="#tiered-retrieval" title="Link to this heading">#</a></h3>
+<p>The most effective architecture places a traditional exact-match cache (like Redis) in front of the semantic layer. This creates a two-tier system where identical queries are handled instantly by exact matching, while similar queries fall through to semantic search. This approach eliminates false positives for repeated queries while preserving the benefits of semantic matching for variations. It’s also much cheaper - exact matching costs microseconds compared to the milliseconds required for embedding and vector search.</p>
+</section>
+<section id="metadata-filtering-and-isolation">
+<h3>Metadata Filtering and Isolation<a class="headerlink" href="#metadata-filtering-and-isolation" title="Link to this heading">#</a></h3>
+<p>Semantic similarity alone cannot enforce access control or data isolation. In multi-tenant systems, you must apply hard metadata filters (tenant_id, user_role, data_classification) before semantic matching. Without these filters, users could receive cached responses from data they’re not authorized to access, simply because the queries were semantically similar. The vector space doesn’t understand permissions - it only measures semantic distance.</p>
+</section>
+<section id="confidence-binning">
+<h3>Confidence Binning<a class="headerlink" href="#confidence-binning" title="Link to this heading">#</a></h3>
+<p>Instead of a single similarity threshold, implement multiple confidence levels with different handling strategies:</p>
+<ul class="simple">
+<li><p>High confidence (0.95+): Serve immediately</p></li>
+<li><p>Medium confidence (0.85-0.95): Log for review or verify with a cheaper model</p></li>
+<li><p>Low confidence (below 0.85): Bypass cache</p></li>
+</ul>
+</section>
+<section id="knowledge-base-versioning">
+<h3>Knowledge Base Versioning<a class="headerlink" href="#knowledge-base-versioning" title="Link to this heading">#</a></h3>
+<p>Semantic caches become stale when underlying data changes, but unlike traditional caches, there’s no simple way to invalidate specific entries. The solution is to tie cache entries to knowledge base versions. When you update source documents, increment a version number and filter cache searches to only include entries from the current version. This prevents serving outdated information while allowing gra dual cache rebuilding as new queries come in. This is especially critical for domains where information changes frequently, like news, financial data, or policy documents.</p>
+</section>
+<section id="feedback-loops-and-negative-signals">
+<h3>Feedback Loops and Negative Signals<a class="headerlink" href="#feedback-loops-and-negative-signals" title="Link to this heading">#</a></h3>
+<p>User feedback provides the most reliable signal for cache quality. When users indicate dissatisfaction (thumbs down, corrections, complaints), automatically flag those cache entries for review. These negative signals can trigger background processes to re-evaluate the semantic match quality, potentially removing bad entries or adjusting similarity thresholds. This creates a self-improving system that learns from real user experiences rather than just mathematical similarity scores.</p>
+</section>
+<section id="post-generation-verification">
+<h3>Post-Generation Verification<a class="headerlink" href="#post-generation-verification" title="Link to this heading">#</a></h3>
+<p>Periodically audit your cache by re-running the full generation process for cached queries and comparing outputs. This background verification helps identify two critical problems:</p>
+<ol class="arabic simple">
+<li><p><strong>Knowledge drift</strong>: Where cached answers become outdated</p></li>
+<li><p><strong>Persistent hallucinations</strong>: Where a cached incorrect answer gets served repeatedly</p></li>
+</ol>
+<p>Run this verification on a sample of cache entries, prioritizing high-traffic queries and those with lower confidence scores. Significant differences between cached and fresh responses indicate cache entries that should be invalidated.</p>
+</section>
+<section id="cluster-density-and-collision-analysis">
+<h3>Cluster Density and Collision Analysis<a class="headerlink" href="#cluster-density-and-collision-analysis" title="Link to this heading">#</a></h3>
+<p>Monitor your vector space for areas where many different queries map to similar locations. High density regions often indicate that the embedding model is failing to distinguish between genuinely different concepts. When you detect these collision zones, investigate whether the affected queries actually require different answers. If they do, consider adding metadata filters or adjusting preprocessing to better separate these cases.</p>
+</section>
+<section id="state-coupling-and-orchestration">
+<h3>State Coupling and Orchestration<a class="headerlink" href="#state-coupling-and-orchestration" title="Link to this heading">#</a></h3>
+<p>Optimize for the common case of cache misses by reusing computational work. The embedding generated for cache lookup should be passed to your RAG system to avoid re-computing the same vector. For parallel execution (cache + LLM running simultaneously), implement proper cancellation mechanisms. When a cache hit is confirmed, immediately terminate the LLM request to avoid wasting tokens and compute resources.</p>
+</section>
+<section id="non-blocking-persistence">
+<h3>Non-Blocking Persistence<a class="headerlink" href="#non-blocking-persistence" title="Link to this heading">#</a></h3>
+<p>Never make users wait for cache writes. When generating a new response, return it to the user immediately and handle cache persistence in the background. Background write failures should be logged but not propagate to users. It’s better to miss future cache opportunities than to degrade current user experience. Implement retry mechanisms for failed writes, but always prioritize response time over cache completeness. This approach ensures that caching remains a pure optimization that never negatively impacts user experience.</p>
+</section>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+     
+<div class="section ablog__prev-next">
+  <span class="ablog__prev">
+     
+    <a href="../what_is_agentic_system/">
+      
+      <i class="fa fa-arrow-circle-left"></i>
+      
+      <span>My Two Cents on Agentic AI</span>
+    </a>
+    
+  </span>
+  <span class="ablog__spacer">&nbsp;</span>
+  <span class="ablog__next">
+    
+  </span>
+</div>
+  
+</div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-process-of-finding-semantic-cache">The Process of Finding Semantic Cache</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-limititations-of-embedding">The Limititations of Embedding</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#input-sensitivity-and-negation">Input Sensitivity and Negation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#strategies-for-key-construction">Strategies for Key Construction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temporal-and-implicit-context">Temporal and Implicit Context</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#addressing-false-positives">Addressing False Positives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#high-density-data-and-granularity">High-Density Data and Granularity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dependency-on-vendor-models">Dependency on Vendor Models</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-coupling-and-optimization">Architectural Coupling and Optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-calculus-of-latency-and-cost">The Calculus of Latency and Cost</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-tips-in-practice">Implementation Tips in Practice</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#input-canonicalization">Input Canonicalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tiered-retrieval">Tiered Retrieval</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-filtering-and-isolation">Metadata Filtering and Isolation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#confidence-binning">Confidence Binning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#knowledge-base-versioning">Knowledge Base Versioning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feedback-loops-and-negative-signals">Feedback Loops and Negative Signals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#post-generation-verification">Post-Generation Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-density-and-collision-analysis">Cluster Density and Collision Analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-coupling-and-orchestration">State Coupling and Orchestration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#non-blocking-persistence">Non-Blocking Persistence</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Yi Q.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
