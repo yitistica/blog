@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Routing Docker Image Pulls Through a VPN Tunnel &#8212; qiuyids.me</title>
+    <title>A Practical Architectural Workflow for Semantic Caching &#8212; qiuyids.me</title>
   
   
   
@@ -47,7 +47,7 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=6b89569b"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'posts/route_docker_image_pulls_through_vpn_tunnel';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'posts/semantic_caching workflow';</script>
     <link rel="icon" href="../../_static/y_logo_icononly.png"/>
     <link rel="author" title="About these documents" href="../../about/" />
     <link rel="index" title="Index" href="../../genindex/" />
@@ -328,7 +328,7 @@
                 
                 <i class="fa fa-calendar"></i>
                 
-                2024-07-13
+                2025-07-05
                 </span>
             </li>
             
@@ -349,22 +349,17 @@
     
     
     <li class="tag_li">
-        <a href="../../blog/tag/docker/"><span class="sd-badge">Docker</span></a></li>
+        <a href="../../blog/tag/caching/"><span class="sd-badge">Caching</span></a></li>
     
     
     
     <li class="tag_li">
-        <a href="../../blog/tag/vpn/"><span class="sd-badge">VPN</span></a></li>
+        <a href="../../blog/tag/system-design/"><span class="sd-badge">System Design</span></a></li>
     
     
     
     <li class="tag_li">
-        <a href="../../blog/tag/set-up-guide/"><span class="sd-badge">set-up-guide</span></a></li>
-    
-    
-    
-    <li class="tag_li">
-        <a href="../../blog/tag/home-lab/"><span class="sd-badge">Home-Lab</span></a></li>
+        <a href="../../blog/tag/llmops/"><span class="sd-badge">LLMOps</span></a></li>
     
     
 </ul>
@@ -381,11 +376,11 @@
   
   
   
+  
+  
   <li class="category_li">
-    <a href="../../blog/category/quick-note/"><span>Quick-Note (1)</span></a>
+    <a href="../../blog/category/system-design/"><span>System Design (2)</span></a>
   </li>
-  
-  
   
   
   
@@ -400,13 +395,6 @@
         <a href="../../blog/">Recently Written</a>
     </h4>
     <ul class="category_ul">
-        
-        <li class="category_li">
-            <a href="../semantic_caching workflow/">
-                <span>A Practical Architectural Workflow for Semantic Caching</span>
-            </a>
-            <span> - 2025-07-05</span>
-        </li>
         
         <li class="category_li">
             <a href="../semantic_caching/">
@@ -434,6 +422,13 @@
                 <span>Deploying a Local Kubernetes Cluster on Ubuntu Servers</span>
             </a>
             <span> - 2024-07-15</span>
+        </li>
+        
+        <li class="category_li">
+            <a href="../route_docker_image_pulls_through_vpn_tunnel/">
+                <span>Routing Docker Image Pulls Through a VPN Tunnel</span>
+            </a>
+            <span> - 2024-07-13</span>
         </li>
         
         <li class="category_li">
@@ -484,7 +479,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Routing Docker Image Pulls Through a VPN Tunnel</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">A Practical Architectural Workflow for Semantic Caching</span></li>
   </ul>
 </nav>
 </div>
@@ -500,89 +495,43 @@
                 
 <div id="searchbox"></div>
                 <article class="bd-article">
-                   <section id="routing-docker-image-pulls-through-a-vpn-tunnel">
-<h1>Routing Docker Image Pulls Through a VPN Tunnel<a class="headerlink" href="#routing-docker-image-pulls-through-a-vpn-tunnel" title="Link to this heading">#</a></h1>
-<p>A quick method for bypassing network restrictions that blocked Docker from directly accessing container registries.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>AI Usage Notice</strong>: This post uses AI for research assistance, going beyond my standard grammar-only policy.</p>
-<p><strong>Fast Workaround</strong>: This post documents a specific technical problem I faced and how I solved it. The solution is tailored to my particular local environment and not a comprehensive guide for all scenarios.</p>
-</div>
-<section id="overcoming-network-restrictions">
-<h2>Overcoming Network Restrictions<a class="headerlink" href="#overcoming-network-restrictions" title="Link to this heading">#</a></h2>
-<p>This note outlines a way to overcome network firewall restrictions that were preventing Docker from accessing container registries directly. I’m documenting this primarily for my own future reference, but it should work for anyone facing similar networking challenges, such as corporate environments with restricted VPN access policies or home labs where only one system has VPN setup.</p>
+                   <section id="a-practical-architectural-workflow-for-semantic-caching">
+<h1>A Practical Architectural Workflow for Semantic Caching<a class="headerlink" href="#a-practical-architectural-workflow-for-semantic-caching" title="Link to this heading">#</a></h1>
+<p>In the previous <a class="reference internal" href="../semantic_caching/"><span class="doc">post</span></a>, I discussed the fundamental limitations and trade-offs of semantic caching implementation.</p>
+<p>In this post, I think it would be a great idea to provide a workflow diagram incorporating the major points that I previously discussed. Though this might seem like over-engineering for a simple application, these decision points help build a more robust system with semantic caching.</p>
+<a class="only-light reference internal image-reference" href="../../_images/semantic_cache_workflow_light.png"><img alt="Semantic Cache Workflow" class="only-light align-center" src="../../_images/semantic_cache_workflow_light.png" style="width: 99%;" />
+</a>
+<a class="only-dark reference internal image-reference" href="../../_images/semantic_cache_workflow_dark.png"><img alt="Semantic Cache Workflow" class="only-dark align-center" src="../../_images/semantic_cache_workflow_dark.png" style="width: 99%;" />
+</a>
+<section id="workflow-breakdown">
+<h2>Workflow Breakdown…<a class="headerlink" href="#workflow-breakdown" title="Link to this heading">#</a></h2>
+<section id="the-main-workflow">
+<h3>The Main Workflow<a class="headerlink" href="#the-main-workflow" title="Link to this heading">#</a></h3>
+<p>The blue nodes represent the primary path a user’s question takes through the main system.</p>
+<p><strong>User Query + Chat Log</strong>: The process starts when a user asks a question. The system looks at both the current query and the recent conversation history to understand the full context.</p>
+<p><strong>Wait for Cache Search Result</strong>: As we already triggered the cache searching workflow, here main workflow will pause until the cache searching workflow to complete or timeout.</p>
+<p><strong>Positive Cache Hit?</strong>:
+- Yes: The cached answer is delivered immediately. This is the fastest path.
+- No / Timeout: If no match is found, or if the cache search takes too long (timeout), the system resumes the main workflow.</p>
+<p><strong>Query Embedding</strong>: If the cache misses, the query is converted into a vector (a numerical representation of meaning). This vector can be passed from the cache searching workflow to avoid re-calculating if embedded strings are identical.</p>
 </section>
-<section id="the-problem">
-<h2>The Problem<a class="headerlink" href="#the-problem" title="Link to this heading">#</a></h2>
-<p>I had two machines:</p>
-<ul class="simple">
-<li><p>Machine A: Linux server running Docker, needing to pull container images</p></li>
-<li><p>Machine B: another system with sharing VPN connection active</p></li>
-</ul>
-<p>The Docker couldn’t directly access public container registries due to the firewall, but my Mac with VPN (WireGuard) could access everything. I needed a way to route Docker’s traffic through the VPN-enabled machine.</p>
+<section id="searching-a-cache">
+<h3>Searching a Cache<a class="headerlink" href="#searching-a-cache" title="Link to this heading">#</a></h3>
+<p>The green nodes show the logic used to determine if a previous answer is relevant to the new query.</p>
+<p><strong>Input Feeding &amp; Canonicalization</strong>: The system cleans the input by standardizing the text (e.g., removing extra spaces or converting to lowercase). This ensures that “How is the weather?” and “how is the weather” are treated the same.</p>
+<p><strong>Tiered Retrieval &amp; Similarity Search</strong>: The search happens in stages. It first looks for an Exact Match (identical text). If that fails, it moves to a <strong>Similarity Search</strong> using the vector embeddings to find queries with the same meaning.</p>
+<p><strong>Confidence Binning</strong>: we will evaluates how similar the match is and assigns a score:
+- High Confidence (≥0.95): The match is so close that the system skips further verification and uses the answer.
+- Medium Confidence (0.85-0.95): The match is likely, but it requires a post-generation check to ensure it is still accurate.
+- Low Confidence (&lt;0.85): The match is too weak. This is treated as a “Cache Miss.”</p>
+<p><strong>Negative Cache Check</strong>: Even if a match is found, the system checks if that specific Q&amp;A pair has been flagged as “bad” or “negative” in the past. If it’s in the negative cache, the system skips it and generates a fresh answer.</p>
 </section>
-<section id="the-solution-ssh-socks-proxy">
-<h2>The Solution: SSH SOCKS Proxy<a class="headerlink" href="#the-solution-ssh-socks-proxy" title="Link to this heading">#</a></h2>
-<p>An easy solution it to create an SSH SOCKS proxy tunnel from the Docker host to the VPN-enabled Mac, then configuring Docker daemon to use this proxy.</p>
-<section id="step-1-enable-ssh-on-machine-b">
-<h3>Step 1: Enable SSH on Machine B<a class="headerlink" href="#step-1-enable-ssh-on-machine-b" title="Link to this heading">#</a></h3>
-<p>I am using MacOS. So I simply turn on <strong>Remote Login</strong> in the <strong>System Settings</strong> &gt; <strong>General</strong> &gt; <strong>Sharing</strong>. For Linux, it is usually installed and running.</p>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Command: enable and start ssh</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>ssh
-sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>ssh
-
-<span class="c1"># Verify SSH is running</span>
-sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>ssh
-</pre></div>
-</div>
-</div>
-</section>
-<section id="step-2-create-ssh-socks-tunnel-on-machine-a">
-<h3>Step 2: Create SSH SOCKS Tunnel on Machine A<a class="headerlink" href="#step-2-create-ssh-socks-tunnel-on-machine-a" title="Link to this heading">#</a></h3>
-<p>On your Docker host (Machine A), create an SSH tunnel:</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Command: Create SOCKS proxy</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-f<span class="w"> </span>-D<span class="w"> </span><span class="m">1081</span><span class="w"> </span>-N<span class="w"> </span>username@MACHINE_A_IP_ADDRESS
-</pre></div>
-</div>
-</div>
-<p><code class="code highlight bash docutils literal highlight-bash">-D<span class="w"> </span><span class="m">1081</span></code> creates a SOCKS proxy on local port 1081.</p>
-</section>
-<section id="step-3-configure-docker-daemon-to-use-the-proxy">
-<h3>Step 3: Configure Docker Daemon to Use the Proxy<a class="headerlink" href="#step-3-configure-docker-daemon-to-use-the-proxy" title="Link to this heading">#</a></h3>
-<p>Create systemd override configuration for Docker:</p>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Command: Create SOCKS proxy</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/systemd/system/docker.service.d
-sudo<span class="w"> </span>nano<span class="w"> </span>/etc/systemd/system/docker.service.d/http-proxy.conf
-</pre></div>
-</div>
-</div>
-<p>Add the following content to instruct docker to use proxy:</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[Service]</span>
-<span class="na">Environment</span><span class="o">=</span><span class="s">&quot;HTTP_PROXY=socks5://127.0.0.1:1081&quot;</span>
-<span class="na">Environment</span><span class="o">=</span><span class="s">&quot;HTTPS_PROXY=socks5://127.0.0.1:1081&quot;</span>
-<span class="na">Environment</span><span class="o">=</span><span class="s">&quot;NO_PROXY=localhost,127.0.0.1&quot;</span>
-</pre></div>
-</div>
-<p>After changing proxy settings, you may need to restart the Docker daemon (Some corporate proxies may require additional SSL certificate configuration):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
-sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>docker
-</pre></div>
-</div>
-</section>
-<section id="step-4-test-the-setup">
-<h3>Step 4: Test the Setup<a class="headerlink" href="#step-4-test-the-setup" title="Link to this heading">#</a></h3>
-<p>You may verify the SOCKS proxy is working:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--socks5<span class="w"> </span><span class="m">127</span>.0.0.1:1081<span class="w"> </span>http://ifconfig.me
-</pre></div>
-</div>
-<p>This should return your VPN’s IP address.</p>
-<p>While success on this step should indicate correct setup of using proxy, you may try pulling an image:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>jc21/nginx-proxy-manager:latest
-</pre></div>
-</div>
+<section id="saving-a-new-cache">
+<h3>Saving a New Cache<a class="headerlink" href="#saving-a-new-cache" title="Link to this heading">#</a></h3>
+<p>The orange nodes represent the cache saving tasks. These are supposed to be non-blocking, meaning they happen in the background so the user doesn’t have to wait for them.</p>
+<p><strong>Result Validation</strong>: When the AI generates a brand-new answer, the system checks it for quality and accuracy before saving it.</p>
+<p><strong>Assemble &amp; Update Cache</strong>: The new query and its validated answer are packaged together and written into the cache database for future use.</p>
+<p><strong>Replenish Cache Pool</strong>: To prevent the AI from sounding robotic or repetitive, the system can trigger the main workflow in the background. This generates a variety of responses for common questions, ensuring the cache pool stays fresh and diverse.</p>
 </section>
 </section>
 </section>
@@ -592,23 +541,16 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class=
 <div class="section ablog__prev-next">
   <span class="ablog__prev">
      
-    <a href="../set_up_docker_image_registry_for_kubernetes/">
+    <a href="../semantic_caching/">
       
       <i class="fa fa-arrow-circle-left"></i>
       
-      <span>Setting Up a Private Docker Registry</span>
+      <span>Implementing Semantic Caching in Production</span>
     </a>
     
   </span>
   <span class="ablog__spacer">&nbsp;</span>
   <span class="ablog__next">
-     
-    <a href="../set_up_kubernetes_cluster/">
-      <span>Deploying a Local Kubernetes Cluster on Ubuntu Servers</span>
-      
-      <i class="fa fa-arrow-circle-right"></i>
-      
-    </a>
     
   </span>
 </div>
@@ -643,13 +585,10 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class=
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overcoming-network-restrictions">Overcoming Network Restrictions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-problem">The Problem</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-solution-ssh-socks-proxy">The Solution: SSH SOCKS Proxy</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-enable-ssh-on-machine-b">Step 1: Enable SSH on Machine B</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-create-ssh-socks-tunnel-on-machine-a">Step 2: Create SSH SOCKS Tunnel on Machine A</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-configure-docker-daemon-to-use-the-proxy">Step 3: Configure Docker Daemon to Use the Proxy</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-test-the-setup">Step 4: Test the Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-breakdown">Workflow Breakdown…</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-main-workflow">The Main Workflow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#searching-a-cache">Searching a Cache</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#saving-a-new-cache">Saving a New Cache</a></li>
 </ul>
 </li>
 </ul>

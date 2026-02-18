@@ -349,12 +349,17 @@
     
     
     <li class="tag_li">
-        <a href="../../blog/tag/technical-advices/"><span class="sd-badge">technical advices</span></a></li>
+        <a href="../../blog/tag/caching/"><span class="sd-badge">Caching</span></a></li>
     
     
     
     <li class="tag_li">
-        <a href="../../blog/tag/opinions/"><span class="sd-badge">opinions</span></a></li>
+        <a href="../../blog/tag/system-design/"><span class="sd-badge">System Design</span></a></li>
+    
+    
+    
+    <li class="tag_li">
+        <a href="../../blog/tag/llmops/"><span class="sd-badge">LLMOps</span></a></li>
     
     
 </ul>
@@ -374,7 +379,7 @@
   
   
   <li class="category_li">
-    <a href="../../blog/category/rag/"><span>RAG (1)</span></a>
+    <a href="../../blog/category/system-design/"><span>System Design (2)</span></a>
   </li>
   
   
@@ -390,6 +395,13 @@
         <a href="../../blog/">Recently Written</a>
     </h4>
     <ul class="category_ul">
+        
+        <li class="category_li">
+            <a href="../semantic_caching workflow/">
+                <span>A Practical Architectural Workflow for Semantic Caching</span>
+            </a>
+            <span> - 2025-07-05</span>
+        </li>
         
         <li class="category_li">
             <a href="../what_is_agentic_system/">
@@ -485,18 +497,17 @@
                 <article class="bd-article">
                    <section id="implementing-semantic-caching-in-production">
 <h1>Implementing Semantic Caching in Production<a class="headerlink" href="#implementing-semantic-caching-in-production" title="Link to this heading">#</a></h1>
-<p>Caching is a core strategy for optimizing performance of computation-intensive applications. The rationale is straightforward: assuming that the same inputs will be requested multiple times, so we store the input-output pairs in a fast-access database and simply retrieve them when the same input comes up again. This principle has been adopted by AI systems.</p>
-<p>However, unlike traditional exact-match caching, which relies on deterministic hashing, semantic caching involves a step of taking a guess whether a new query has been asked before by comparing its vectorized semantic representation’s distance to all previously cached queries in a high-dimensional vector space. While this approach reduces computational overhead thus cost and latency in theory, productionizing semantic caching requires careful consideration of possible limitations.</p>
+<p>Caching is a core strategy for optimizing performance of computation-intensive applications. The rationale is straightforward: assuming that the same inputs will be requested multiple times, so we store the input-output pairs in a fast-access database and simply retrieve them when the same input comes up again.</p>
+<p>This principle has been adopted by AI systems. However, unlike traditional exact-match caching, which relies on deterministic hashing, semantic caching involves a step of taking a guess whether a new query has been asked before by comparing its vectorized semantic representation’s distance to all previously cached queries in a high-dimensional vector space. While this approach reduces computational overhead thus cost and latency in theory, productionizing semantic caching requires careful consideration of possible limitations.</p>
 <section id="the-process-of-finding-semantic-cache">
 <h2>The Process of Finding Semantic Cache<a class="headerlink" href="#the-process-of-finding-semantic-cache" title="Link to this heading">#</a></h2>
 <p>Take a chatbot as an example. The system breaks the user’s question into tokens and runs it through a transformer model usually. The model uses learned weights from contextual relationships to create a vector that represents the question’s meaning.</p>
-<p>To check for cached responses, the system measures how close this new vector is to all the vectors we’ve stored before. It finds the “closest” match using similarity calculations like cosine similarity. If the distance is small enough (below our threshold), the system returns the cached answer instead. Of course, when there are no close enough matches, the main workflow proceeds with the heavy computation to generate a fresh response.</p>
+<p>To check for cached responses, the system measures how close this new vector is to all the vectors we’ve stored before. It finds the “closest” match using similarity calculations like cosine similarity. If the distance is small enough (below a set threshold), the system returns the cached answer instead. Of course, when there are no close enough matches, the main workflow proceeds with the heavy computation to generate a fresh response.</p>
 </section>
-<section id="the-limititations-of-embedding">
-<h2>The Limititations of Embedding<a class="headerlink" href="#the-limititations-of-embedding" title="Link to this heading">#</a></h2>
-<p>As you may have already spotted the core issue: how effective is our algorithm for truly giving us the real match? What if a user asks “where is London Rd” vs “where is London”?</p>
-<p>And indeed this is a common oversight - the discrepancy between a model’s general adequacy and domain-specific precision.</p>
-<p>The fundamental problem is that we’re using relatively simple mathematical operations like cosine similarity to capture complex semantic relationships. <strong>These distance metrics assume that proximity in vector space accurately reflects semantic similarity, but this assumption often breaks down in practice.</strong></p>
+<section id="the-limitations-of-embedding">
+<h2>The Limitations of Embedding<a class="headerlink" href="#the-limitations-of-embedding" title="Link to this heading">#</a></h2>
+<p>As you may have already spotted the core issue: how effective is our algorithm for truly giving us the real match? What if a user asks “where is London Rd” vs “where is London”? And indeed this is a common oversight - the discrepancy between a model’s general adequacy and domain-specific precision.</p>
+<p>The problem is that we’re using relatively simple mathematical operations like cosine similarity to capture complex semantic relationships. <strong>These distance metrics assume that proximity in vector space accurately reflects semantic similarity, but this assumption often breaks down in practice.</strong></p>
 <p>Additionally, embedding models are effectively <strong>black boxes trained on generalized corpora.</strong> In specialized domains, such as legal or medical fields, this generalization fails. A general-purpose model may map two queries as semantically identical while failing to distinguish technical nuances that fundamentally alter the required answer. Furthermore, the embedding process is a byproduct of the model’s training objective, not a process optimized specifically for domain-specific search contexts.</p>
 </section>
 <section id="input-sensitivity-and-negation">
@@ -508,28 +519,23 @@
 <section id="strategies-for-key-construction">
 <h2>Strategies for Key Construction<a class="headerlink" href="#strategies-for-key-construction" title="Link to this heading">#</a></h2>
 <p>The choice of what to embed as the cache key determines both the accuracy and utility of the entire system. This decision involves a critical trade-off between matching precision and retrieval recall.</p>
-<p><strong>Symmetric Embedding (Query-Only)</strong>: This approach embeds only the user’s question, creating a pure intent-matching system. The advantage is broad applicability - any question with similar phrasing will match regardless of the specific answer content. However, this creates dangerous ambiguity scenarios.</p>
-<p>Consider the query “What is the capital of Georgia?” This could refer to the U.S. state (Atlanta) or the country (Tbilisi). A query-only embedding cannot distinguish between these contexts, potentially serving the wrong cached answer based purely on linguistic similarity.</p>
-<p><strong>Asymmetric Embedding (Query-Plus-Context)</strong>: This strategy embeds the query alongside elements of the generated response, metadata, or retrieval context. The resulting key captures both the question and the contextual framework of the answer.</p>
-<p>This approach prevents shallow matches where questions sound similar but require different knowledge domains. The query about Georgia would embed differently depending on whether the cached response discusses U.S. states or European countries. However, asymmetric keys reduce hit rates significantly. Slight variations in answer phrasing or metadata can prevent legitimate matches, forcing expensive recomputation for essentially identical queries.</p>
-<p>The Granularity Dilemma: Neither approach solves the fundamental tension between precision and recall. More specific keys (including context) reduce false positives but increase false negatives. More general keys (query-only) improve hit rates but risk serving incorrect answers.</p>
-<p>Advanced implementations attempt hybrid approaches - using query-only matching for initial retrieval, then applying context-aware filtering. But this adds computational complexity and latency, potentially negating the performance benefits of caching.</p>
+<p><strong>Symmetric Embedding (Query-Only)</strong>: This approach embeds only the user’s question, creating a pure intent-matching system. The advantage is broad applicability - any question with similar phrasing will match regardless of the specific answer content. However, this creates dangerous ambiguity scenarios. Consider the query “What is the capital of Georgia?” This could refer to the U.S. state (Atlanta) or the country (Tbilisi). A query-only embedding cannot distinguish between these contexts, potentially serving the wrong cached answer based purely on linguistic similarity.</p>
+<p><strong>Asymmetric Embedding (Query-Plus-Context)</strong>: This strategy embeds the query alongside elements of the generated response, metadata, or retrieval context. The resulting key captures both the question and the contextual framework of the answer. This approach prevents shallow matches where questions sound similar but require different knowledge domains. The query about Georgia would embed differently depending on whether the cached response discusses U.S. states or European countries. However, asymmetric keys reduce hit rates significantly. Slight variations in answer phrasing or metadata can prevent legitimate matches, forcing expensive recomputation for essentially identical queries.</p>
+<p>The Granularity Dilemma: Neither approach solves the fundamental tension between precision and recall. More specific keys (including context) reduce false positives but increase false negatives. More general keys (query-only) improve hit rates but risk serving incorrect answers. Advanced implementations attempt hybrid approaches - using query-only matching for initial retrieval, then applying context-aware filtering. But this adds computational complexity and latency, potentially negating the performance benefits of caching.</p>
 </section>
 <section id="temporal-and-implicit-context">
 <h2>Temporal and Implicit Context<a class="headerlink" href="#temporal-and-implicit-context" title="Link to this heading">#</a></h2>
-<p>Semantic caching faces another fundamental challenge with time-sensitive and context-dependent queries. The core problem is that embedding does not validate implicit context.</p>
-<p>Consider “What is the weather today?” asked on Monday versus the same query asked on Tuesday. These produce nearly identical embeddings since they share all semantic tokens, yet they require completely different answers. The cache treats them as equivalent matches, potentially serving Monday’s weather forecast to Tuesday’s user.</p>
-<p>This temporal blindness extends beyond obvious time references. Queries like “What’s the latest news?” or “Show me current stock prices” embed similarly regardless of when they’re asked, but their answers become stale within hours or minutes.</p>
-<p>The available usual solutions each carry significant trade-offs:</p>
+<p>Semantic caching faces another fundamental challenge with time-sensitive and context-dependent queries. The core problem is that embedding does not validate implicit context. Consider “What is the weather today?” asked on Monday versus the same query asked on Tuesday. These produce nearly identical embeddings since they share all semantic tokens, yet they require completely different answers. The cache treats them as equivalent matches, potentially serving Monday’s weather forecast to Tuesday’s user. This temporal blindness extends beyond obvious time references. Queries like “What’s the latest news?” or “Show me current stock prices” embed similarly regardless of when they’re asked, but their answers become stale within hours or minutes.</p>
+<p>The available usual <strong>solutions</strong> each carry significant trade-offs:</p>
 <p><strong>Global Expiry</strong>: Setting aggressive TTLs (Time To Live) forces frequent cache invalidation. While this ensures freshness, it dramatically reduces hit rates and eliminates most caching benefits, making the system less efficient than no cache at all.</p>
 <p><strong>LLM Classification</strong>: Pre-processing queries with an LLM to identify temporal elements adds computational overhead to every request. This approach defeats the purpose of caching by introducing additional latency and API costs before even checking the cache.</p>
 <p><strong>Negative Caching</strong>: Manually curating patterns to bypass the cache requires ongoing maintenance and domain expertise. This reactive approach inevitably misses edge cases and creates blind spots where temporal queries slip through.</p>
-<p>The issue is that <strong>semantic similarity operates in a timeless vector space</strong>, while real-world queries often carry implicit context that vectors cannot capture.</p>
+<p>After all, the issue is that <strong>semantic similarity operates in a timeless vector space</strong>, while real-world queries often carry implicit context that vectors cannot capture.</p>
 </section>
 <section id="addressing-false-positives">
 <h2>Addressing False Positives<a class="headerlink" href="#addressing-false-positives" title="Link to this heading">#</a></h2>
 <p>When two semantically different queries produce similar embeddings, vector space provides no mechanism to understand or prevent this conflation.</p>
-<p>The available interventions are usually reactive and incomplete:</p>
+<p>The available <strong>interventions</strong> are usually reactive and incomplete:</p>
 <p><strong>Negative Caching</strong>: Maintaining a blacklist of known bad matches requires manual discovery of each failure case. This approach is inherently reactive - you only learn about problems after users receive incorrect responses.</p>
 <p><strong>Vector Store Pruning</strong>: Aggressively removing similar vectors reduces false positives but also eliminates legitimate matches, defeating the purpose of caching.</p>
 <p><strong>String-Based Pre-processing</strong>: Adding lexical filters before semantic matching introduces brittleness and misses nuanced cases where the same words have different meanings in different contexts.</p>
@@ -542,13 +548,12 @@
 </section>
 <section id="dependency-on-vendor-models">
 <h2>Dependency on Vendor Models<a class="headerlink" href="#dependency-on-vendor-models" title="Link to this heading">#</a></h2>
-<p>When OpenAI releases a new version of their embedding model, the entire semantic cache in use is expected to be obsolete soon. Vectors generated by the old model cannot be meaningfully compared to vectors from the new model, as they exist in entirely different spaces. This creates a catastrophic maintenance scenario. Consider a production system with millions of cached query-response pairs. A vendor model update forces a complete cache rebuild: every historical query must be re-embedded using the new model, and every vector in the database must be replaced. For large-scale systems, this process is expensive. Some may look into self-hosted embedding alternatives, which require significant infrastructure investment and ongoing maintenance, often negating the cost benefits of caching.</p>
+<p>When OpenAI releases a new version of their embedding model, the entire semantic cache in use is expected to be obsolete soon. Vectors generated by the old model cannot be meaningfully compared to vectors from the new model, as they exist in entirely different spaces. This creates a maintenance issue. Consider a production system with millions of cached query-response pairs. A vendor model update forces a complete cache rebuild: every historical query must be re-embedded using the new model, and every vector in the database must be replaced. For large-scale systems, this process is expensive. Some may look into self-hosted embedding alternatives, which require significant infrastructure investment and ongoing maintenance, often negating the cost benefits of caching.</p>
 </section>
 <section id="architectural-coupling-and-optimization">
 <h2>Architectural Coupling and Optimization<a class="headerlink" href="#architectural-coupling-and-optimization" title="Link to this heading">#</a></h2>
 <p>Effective semantic caching requires deep integration with the application architecture, the performance and failure modes demand careful orchestration across multiple system components.</p>
-<p><strong>State Reuse and Computational Efficiency</strong>: A critical optimization involves eliminating redundant embedding generation. When a cache lookup misses, the query embedding computed for similarity search should be preserved and passed to downstream RAG components. This prevents the expensive re-computation of the same vector for knowledge retrieval.</p>
-<p>However, this optimization requires tighter coupling between cache and retrieval systems. The embedding must be passed through the entire request pipeline, requiring changes to API contracts and data flow architecture. Many organizations treat caching as an isolated optimization, missing this crucial efficiency gain.</p>
+<p><strong>State Reuse and Computational Efficiency</strong>: A critical optimization involves eliminating redundant embedding generation. When a cache lookup misses, the query embedding computed for similarity search should be preserved and passed to downstream RAG components. This prevents the expensive re-computation of the same vector for knowledge retrieval.However, this optimization requires tighter coupling between cache and retrieval systems. The embedding must be passed through the entire request pipeline, requiring changes to API contracts and data flow architecture. Many organizations treat caching as an isolated optimization, missing this crucial efficiency gain.</p>
 <p><strong>Parallel Execution and Race Conditions</strong>: To minimize latency impact, cache lookups can run in parallel with LLM generation. This hedging strategy ensures that slow cache operations don’t delay response times. But it introduces complex orchestration challenges.</p>
 <p>The system must be able to terminate active LLM requests immediately upon cache hits to avoid wasted tokens and compute. This requires streaming API integration and careful state management to prevent race conditions where both cached and generated responses are delivered to users.</p>
 <p><strong>Async Write Operations and Consistency</strong>: Cache persistence must be completely decoupled from user-facing response times. Writing new query-response pairs to the vector store should happen asynchronously in the background, allowing users to receive responses immediately.</p>
@@ -559,8 +564,7 @@
 <section id="the-calculus-of-latency-and-cost">
 <h2>The Calculus of Latency and Cost<a class="headerlink" href="#the-calculus-of-latency-and-cost" title="Link to this heading">#</a></h2>
 <p>Semantic caching introduces a complex economic equation where the benefits are probabilistic but the costs are guaranteed. Every implementation must solve a fundamental trade-off: the certain overhead of cache operations versus the uncertain savings from cache hits.</p>
-<p>The Latency Paradox: <strong>Cache lookups are never free.</strong> Each incoming query requires embedding generation plus vector similarity search. In sequential architectures, cache misses accumulate this overhead on top of the original LLM latency. For applications with low hit rates, semantic caching actually degrades performance compared to direct LLM calls.</p>
-<p>This creates a vicious cycle in high-variance environments. Applications with diverse queries experience low hit rates, making the cache overhead more expensive than the LLM calls it’s meant to replace. The cache becomes a performance liability rather than an optimization.</p>
+<p><strong>Cache lookups are never free (Latency Paradox).</strong> Each incoming query requires embedding generation plus vector similarity search. In sequential architectures, cache misses accumulate this overhead on top of the original LLM latency. For applications with low hit rates, semantic caching actually degrades performance compared to direct LLM calls. This creates a vicious cycle in high-variance environments. Applications with diverse queries experience low hit rates, making the cache overhead more expensive than the LLM calls it’s meant to replace. The cache becomes a performance liability rather than an optimization.</p>
 <p>The Economic Viability Matrix: Cost effectiveness depends on multiple interdependent factors:</p>
 <p><strong>Query Variance vs. Hit Rate</strong>: Applications with repetitive query patterns (customer support, FAQ systems) achieve high hit rates, making caching economically viable. Applications with creative or analytical queries (research tools, content generation) often see low hit rates, where cache infrastructure costs exceed LLM API savings.</p>
 <p><strong>Threshold Sensitivity</strong>: Conservative similarity thresholds (0.95+) ensure accuracy but reduce hit rates. Aggressive thresholds (0.8-) improve hit rates but introduce false positives that damage user experience. There’s no universal sweet spot - each domain requires extensive tuning.</p>
@@ -576,7 +580,7 @@
 </section>
 <section id="tiered-retrieval">
 <h3>Tiered Retrieval<a class="headerlink" href="#tiered-retrieval" title="Link to this heading">#</a></h3>
-<p>The most effective architecture places a traditional exact-match cache (like Redis) in front of the semantic layer. This creates a two-tier system where identical queries are handled instantly by exact matching, while similar queries fall through to semantic search. This approach eliminates false positives for repeated queries while preserving the benefits of semantic matching for variations. It’s also much cheaper - exact matching costs microseconds compared to the milliseconds required for embedding and vector search.</p>
+<p>The most effective architecture places a traditional exact-match cache (like Redis) in front of the semantic layer. This creates a two-tier system where identical queries are handled instantly by exact matching, while similar queries fall through to semantic search. This approach eliminates false positives for repeated queries while preserving the benefits of semantic matching for variations. It’s also much quicker - exact matching costs microseconds compared to the milliseconds required for embedding and vector search.</p>
 </section>
 <section id="metadata-filtering-and-isolation">
 <h3>Metadata Filtering and Isolation<a class="headerlink" href="#metadata-filtering-and-isolation" title="Link to this heading">#</a></h3>
@@ -593,7 +597,7 @@
 </section>
 <section id="knowledge-base-versioning">
 <h3>Knowledge Base Versioning<a class="headerlink" href="#knowledge-base-versioning" title="Link to this heading">#</a></h3>
-<p>Semantic caches become stale when underlying data changes, but unlike traditional caches, there’s no simple way to invalidate specific entries. The solution is to tie cache entries to knowledge base versions. When you update source documents, increment a version number and filter cache searches to only include entries from the current version. This prevents serving outdated information while allowing gra dual cache rebuilding as new queries come in. This is especially critical for domains where information changes frequently, like news, financial data, or policy documents.</p>
+<p>Semantic caches become stale when underlying data changes, but unlike traditional caches, there’s no simple way to invalidate specific entries. The solution is to tie cache entries to knowledge base versions. When you update source documents, increment a version number and filter cache searches to only include entries from the current version. This prevents serving outdated information while allowing gradual cache rebuilding as new queries come in. This is especially critical for domains where information changes frequently, like news, financial data, or policy documents.</p>
 </section>
 <section id="feedback-loops-and-negative-signals">
 <h3>Feedback Loops and Negative Signals<a class="headerlink" href="#feedback-loops-and-negative-signals" title="Link to this heading">#</a></h3>
@@ -620,6 +624,14 @@
 <h3>Non-Blocking Persistence<a class="headerlink" href="#non-blocking-persistence" title="Link to this heading">#</a></h3>
 <p>Never make users wait for cache writes. When generating a new response, return it to the user immediately and handle cache persistence in the background. Background write failures should be logged but not propagate to users. It’s better to miss future cache opportunities than to degrade current user experience. Implement retry mechanisms for failed writes, but always prioritize response time over cache completeness. This approach ensures that caching remains a pure optimization that never negatively impacts user experience.</p>
 </section>
+<section id="proper-time-out">
+<h3>Proper Time Out<a class="headerlink" href="#proper-time-out" title="Link to this heading">#</a></h3>
+<p>Sometimes the cache itself can be slow. If your database is busy or the network is lagging, checking for a match might take longer than you expect. Set a strict time limit to ensure you never make the user wait for both a slow cache and a slow generation.</p>
+</section>
+<section id="multiple-response">
+<h3>Multiple Response<a class="headerlink" href="#multiple-response" title="Link to this heading">#</a></h3>
+<p>Serving the exact same text every time makes an AI sound robotic. To fix this, you may not limit your cache to one answer per question. Instead, store a “bucket” of different answer variations for the same cache key. Occasionally, you can intentionally return the cached answer to the user and generate a fresh answer and add it to this bucket in the background afterwards. This allows the system to rotate through different phrasings, keeping the conversation natural. However, by doing so, you are generating new answers just to add variety, which costs tokens and compute.</p>
+</section>
 </section>
 </section>
 
@@ -638,6 +650,13 @@
   </span>
   <span class="ablog__spacer">&nbsp;</span>
   <span class="ablog__next">
+     
+    <a href="../semantic_caching workflow/">
+      <span>A Practical Architectural Workflow for Semantic Caching</span>
+      
+      <i class="fa fa-arrow-circle-right"></i>
+      
+    </a>
     
   </span>
 </div>
@@ -673,7 +692,7 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-process-of-finding-semantic-cache">The Process of Finding Semantic Cache</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-limititations-of-embedding">The Limititations of Embedding</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-limitations-of-embedding">The Limitations of Embedding</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#input-sensitivity-and-negation">Input Sensitivity and Negation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#strategies-for-key-construction">Strategies for Key Construction</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temporal-and-implicit-context">Temporal and Implicit Context</a></li>
@@ -693,6 +712,8 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cluster-density-and-collision-analysis">Cluster Density and Collision Analysis</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-coupling-and-orchestration">State Coupling and Orchestration</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#non-blocking-persistence">Non-Blocking Persistence</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#proper-time-out">Proper Time Out</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-response">Multiple Response</a></li>
 </ul>
 </li>
 </ul>
